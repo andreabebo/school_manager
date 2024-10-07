@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+
+    h1{
+        text-align: center;
+        font-weight: bold;
+    }
+    </style>
+{% endblock css %}
+{% block content %}
+    <h1>CHOIX DE LA SESSION</h1>
+
+        
+        <div class="d-flex align-items-center justify-content-center">
+            <div class="suit w-50 mt-5">
+                <form method="post">
+                    {% csrf_token %}
+                    <label>Session</label>
+                    <select id="" name="session" class="form-control">
+                        <option value="">--------------</option>
+                        {% for session in sessions%}
+                            <option value="{{session.pk}}">{{session.nom_session}}</option>
+                        {% endfor%}
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm my-2"> Continuer <i class="fa-solid fa-arrow-right-long mx-1"></i></button> 
+                </form>
+            </div>  
+        </div>  
+{% endblock content %}

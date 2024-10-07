@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}compte{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: skyblue;
+        }
+        form.form{
+            
+            width: 100%;
+            height: 25%;
+            margin-left: 20px;
+            margin-top: 0px;
+        }
+        .container{
+            
+            margin-left: 100px;
+            margin-top: 5px;
+            width: 50%;
+        }
+        .sit {
+            width: 600px;
+            display: block;
+            border-radius: 20px;
+            border: none;
+        }
+        .ring{
+            width: 200px;
+            border: 4PX solid black;
+            
+            
+        }
+        label{
+            font-weight: bold;
+        }
+        .nina{
+            width: 100px;
+            margin-left: 450px;
+            background-color: rgb(0, 60, 255);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+        }
+
+        .tin{
+            text-decoration: none;
+            color: white;
+            
+        }
+        .tina{
+            text-decoration: none;
+            color: blue;
+            
+        }
+        .nin{
+            font-weight: bold;
+            margin-right: 200px;
+        }
+    </style> 
+{% endblock css %}
+{% block content %}
+    <div class="container">
+        <form class="form" method="post">
+            {% csrf_token %}
+            {% if user.profile_image %}
+                <img class="ring" src="{{user.profile_image.url}}"><br>
+            {% else %}
+                <img class="ring" src="/static/images/formateur.PNG"><br>
+            {% endif %}
+            <label for="">Noms:</label>
+            <input class="sit" type="text" readonly name="last_name" value='{{user.last_name}}'><br>
+            <label for="">Prenoms:</label>
+            <input class="sit" type="text" readonly name="first_name" value='{{user.first_name}}'><br>
+            <label for="">Adresse email:</label>
+            <input class="sit" type="email" readonly name="email" value='{{user.email}}'><br>
+            <label for="">Mot de passe:</label>
+            <input class="sit" type="password" readonly name="password"><br>
+            <button class="nina" type="submit"><a class="tin" href="/edit_compte/{{user.id}}" >Modifier</a></button>
+           
+        </form>
+    </div>
+{% endblock content %}
+

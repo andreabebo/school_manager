@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}
+    Afficher SCOLARITE
+{% endblock title %}
+{% block css %}
+     <style>
+
+
+    h1{
+        text-align: center;
+        font-weight: bolder;
+    }
+
+        
+     .soldé {
+         background-color: #d4edda;
+         color: #155724;
+     }
+
+     .non-soldé {
+         background-color: #f8d7da;
+         color: #721c24;
+     }
+
+     </style>
+{% endblock css %}
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">SCOLARITE</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            LISTE DES ETUDIANTS
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple">
+        <thead>
+            <tr class="{% if paiement.etat_scolarite == 'Soldé' %}soldé{% else %}non-soldé{% endif %}">
+                <th>Nom de l'étudiant</th>
+                <th>Date de paiement</th>
+                <th>Heure de paiement</th>
+                <th>Tranche</th>
+                <th>Montant versé</th>
+                <th>Montant total</th>
+                <th>Montant restant</th>
+                <th>Etat de l'etudiant</th>
+                <th>Option</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paiement in paiements %}
+            <tr id="paiement-{{paiement.id}}">
+                <td>{{ paiement.student.user.get_full_name }} </td>
+                <td>{{ paiement.date_paiement }}</td>
+                <td>{{ paiement.heure_paiement }}</td>
+                <td>{{ paiement.tranche }}</td>
+                <td>{{ paiement.montant_verse }}</td>
+                <td>{{ paiement.montant_total }}</td>
+                <td>{{ paiement.montant_restant }}</td>
+                <td>{{ paiement.etat_scolarite }}</td>
+                <td><a href="{% url 'imprimer_scolarite' paiement.pk %}"><i class="fa-solid fa-download">Imprimer</i></a></td>
+            </tr>
+        {% empty %}
+                <tr>
+                    <td colspan="6">Aucun versement effectue ...</td>
+                </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+  
+
+                     
+         
+
+

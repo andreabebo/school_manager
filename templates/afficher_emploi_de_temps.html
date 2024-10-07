@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}
+Imprimer emploi de temps
+{% endblock title %}
+{% block css %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:whitesmoke;
+            margin: 0;
+            padding: 20px;
+            }
+            
+            .receipt {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+            }
+            
+            h2{
+            text-align: center;
+            font-weight: bolder;
+            font-family: 'Times New Roman', Times, serif;
+            text-decoration: underline;
+            }
+            
+            p {
+            font-size: 25px;
+            line-height: 1.5;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            }
+            
+            .cimi {
+            display: flex;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            }
+            .mike{
+                background-color: #dada23;
+            }
+            
+            .mike:hover {
+            background-color: rgb(142, 128, 128) ;
+            }
+            thead{
+                background-color: #dada23;
+                border: 4px solid black;
+                
+            }
+            tr{
+                border: 4px solid black;
+            }
+            table{
+                width: 900PX;
+                height: 300px;
+            }
+            td{
+                border: 3px solid black;
+            }
+
+    </style>
+{% endblock css %}
+{% block content %}
+<h2>EMPLOI  DE TEMPS</h2>
+{% csrf_token %}
+<p>Filière : {{ emploi_de_temps.filiere.nom }}</p>
+<p>Semaine du {{ emploi_de_temps.date_debut }} au {{ emploi_de_temps.date_fin }}</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Jours</th>
+            <th>Heure de début</th>
+            <th>Heure de fin</th>
+            <th>Activités</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for activites in activites_jour %}
+        <tr>
+            <td>{{ activite.jour }}</td>
+            <td>{{ activite.heure_debut }}</td>
+            <td>{{ activite.heure_fin }}</td>
+            <td>{{ activite.matiere }} </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="cimi">
+
+<button class="mike" onclick="printReceipt()">Exporter en PDF</button>
+<button class="mike" onclick="shareOnWhatsApp()">WhatsApp</button>
+<button class="mike" onclick="shareOnGmail()">Gmail</button>
+<button class="mike" onclick="shareOnTelegram()">Telegram</button>
+<button class="mike" onclick="shareOnFacebook()">Facebook</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="script.js"></script>
+<script>
+
+    function printReceipt() {
+        window.print();
+    }
+</script>
+<script src="script.js"></script>
+<script>
+    // Rediriger vers Gmail lorsque l'onglet Messagerie est cliqué
+    document.getElementById("messageTab").onclick = function(event) {
+        event.preventDefault(); // Empêche le comportement par défaut du lien
+        window.open('https://mail.google.com/', '_blank'); // Ouvre Gmail dans un nouvel onglet
+    };
+
+    // Fonctions de partage
+    function shareOnWhatsApp() {
+        const message = "Voici mon reçu de paiement de scolarité.";
+        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
+        window.open(`https://wa.me/?text=${encodeURIComponent(message)} ${encodeURIComponent(url)}`, '_blank');
+    }
+
+    function shareOnGmail() {
+        const subject = "Reçu de Paiement de Scolarité";
+        const body = "Voici mon reçu de paiement de scolarité. Consultez-le ici : https://example.com"; // Remplacez par l'URL que vous souhaitez partager
+        window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+    }
+
+    function shareOnTelegram() {
+        const message = "Voici mon reçu de paiement de scolarité.";
+        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
+        window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function shareOnFacebook() {
+        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Affichage de tous les cours{% endblock title %}
+{% block css %}
+<style>
+    h1{
+        text-align: center;
+        font-weight: bold;
+    }
+    h2{
+        color: #CD5C5C;
+        font-family: robotto;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    .blue{
+        color: black;
+        font-weight: bold;
+    }
+    p{
+        font-family: arial;  
+    }
+</style>
+{% endblock css %}
+{% block content %}
+<h1>BIENVENU SUR NOTRE CANAL DE DISCUSSION!</h1>
+
+<ul>
+    {% for lesson in cours %}
+        <li>
+            <h2>{{ lesson.titre }}</h2>
+            <p >{{ lesson.contenu|truncatewords:30 }}</p>
+            {% if lesson.fichier %}
+                <p><a href="{{ lesson.fichier.url }}">Télécharger le fichier</a></p>
+            {% endif %}
+            <p><a href="{% url 'detail_cours' lesson.id %}">Voir plus</a></p>
+            <p class="blue">Par {{ lesson.auteur }} - Publié le {{ lesson.date_pub }}</p>
+            <p class="blue">Par {{ lesson.auteur }} - Publié le {{ lesson.heure_pub }}</p>
+        </li>
+    {% empty %}
+        <li>Aucun cours disponible pour le moment.</li>
+    {% endfor %}
+</ul>
+
+{% endblock  %}

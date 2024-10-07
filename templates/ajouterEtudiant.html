@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: #B0E0E6;
+
+        }
+       
+        h1{
+            text-align: center;
+            font-weight: bold;
+            font-family: robotto;
+
+        }
+        .container{
+            border: none;
+            height: 500px;
+            margin-left: 30px;
+        }
+        .row{
+            margin-bottom: 60px;
+        }
+        input{
+            display: block;
+            border-radius: 20px;
+            width: 200px;
+        }
+        .form-control{
+            display: block;
+            border-radius: 20px;
+            width: 200px;
+        }
+        button{
+            margin-left: 350px;
+            width: 200px;
+            border-radius: 8px;
+            background: blue;
+            color: white;
+        }
+        label{
+            font-weight: bold;
+        }
+    </style>
+
+{% endblock css %}
+{% block content %}
+
+    <div class="container">
+    
+         <form class="form" method="post">
+            {% csrf_token %}
+             <h1>INSCRIPTION</h1>
+            <div class="row">
+                    <div class="col"> 
+                        <label for="nom">Noms:</label> 
+                        <input type="text" name="last_name">
+                    </div>
+                    <div class="col">
+                        <label for="prenom">Prénoms:</label> 
+                        <input type="text" name="first_name">
+                    </div>
+                    <div class="col">
+                        <label for="age">Date de naissance:</label> 
+                        <input type="date" name="age" required>
+                    </div>
+            </div>
+            <div class="row">
+                    <div class="col">
+                        <label for="email">Email:</label> 
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="col">
+                        <label for="ville">Ville:</label> 
+                        <input type="text" name="ville">
+                    </div>
+                    <div class="col">
+                        <label for="diplome">Diplome récent:</label> 
+                        <input type="text" name="diplome" required>
+                    </div>
+            </div>
+            <div class="row">
+                   <div class="col">
+                    <label for="filière choisie">Filiere:</label > 
+                        <select class="form-control" name="filiere">
+                            <option  value="">----------</option>
+                            {% for filiere in filieres %}
+                                <option value="{{filiere.id}}"> {{filiere.nom}} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                         <label for="contact">Contact:</label> 
+                         <input type="tel" name="contact">
+                    </div>
+                    <div class="col">
+                        <label for="nom">Mot de passe:</label> 
+                        <input type="password" name="password">
+                    </div>
+            </div>
+                <button type="submit">S'inscrire</button><br>
+        </form>   
+      
+    </div>
+{% endblock content %}

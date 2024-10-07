@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+
+{% block title %}LISTE DES ETUDIANTS{% endblock title %}
+{% block css %}
+    <style>
+        .icon-container{
+            text-align: right;
+            margin-top: 10px;
+        }
+        .fa-plus{
+            font-size: 2em;
+        }
+        .custom-link{
+            font-size: 24px;
+            background-color: white;
+            margin-right: 50px;
+            text-decoration: none;
+        }
+        h1{
+            text-align: center;
+            font-weight: bolder;
+        }
+    </style>
+{% endblock css %}
+{% block content %}
+
+<div class="icon-container">
+    <a class="custom-link" href="/choix_session" ><i class="fa-solid fa-plus"></i>Ajouter un etudiant</a>
+</div>
+<div class="suit">
+<form method="get" id="myForm" action="{% url 'rechercher_etudiants' %}">
+    <label>Session</label>
+    <select name="session" id="selectOption">
+        <option value="">--------------</option>
+        {% for session in sessions %}
+            <option value="{{session.pk}}" {% if session.pk == session_id %}selected{% endif %}>{{session.nom_session}}</option>
+        {% endfor %}
+    </select>
+</form>
+
+</div>  
+<div class="container-fluid px-4">
+    <h1 class="mt-4">LISTE DES ETUDIANTS ENREGISTRES</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            COORDONNEES
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Age date</th>
+                        <th>Ville</th>
+                        <th>Filière</th>
+                        <th>Matricule</th>
+                        <th>Diplôme</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                        <th>Action</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td> {{ student.id }} </td>
+                            <td> {{ student.user.first_name }} </td>
+                            <td> {{ student.user.last_name }} </td>
+                            <td> {{ student.user.email }} </td>
+                            <td> {{ student.age }} </td>
+                            <td> {{ student.ville }} </td>
+                            <td> {{ student.filiere }} </td>
+                            <td> {{ student.matricule }} </td>
+                            <td> {{ student.diplome }} </td>
+                            <td> {{ student.contact }} </td>
+                            <td> <a href="{% url 'desactiver_utilisateur' student.user.id %}"><i class="fa-solid fa-trash-can"></i></a>  </td>
+                            <!-- <td> <a href="{% url 'edit_user' student.user.id %}"><i class="fa-solid fa-pen-to-square"></i></a>  </td> -->
+                            <td> <a href="{% url 'edit_user' student.user.id %}">Edit</a>  </td>
+                            
+
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">Aucun étudiant inscrit ...</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+{% block js %}
+<script>
+const selectElement=document.getElementById('selectOption');
+const form = document.getElementById('myForm');
+
+selectElement.addEventListener('change', function(){
+ form.submit();
+});
+
+</script>   
+
+{% endblock js %}
+
+
+                 
+         
+        

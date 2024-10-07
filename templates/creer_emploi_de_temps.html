@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Ajouter emploi de temps{% endblock title %}
+{% block css %}
+    <style>
+        h2{
+           text-align: center; 
+           font-weight: bold;
+        }
+        .sim{
+            display: block;
+            margin-left: 20px;
+            width: 400px;
+            border-radius: 50px;
+            
+        }
+        .form-control{
+            display: block;
+            margin-left: 20px;
+            width: 400px;
+            border-radius: 50px;
+        }
+        .mis{
+            font-weight: bold;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .andy{
+            Width: 500Px;
+            height: 300px;
+            border-radius: 20px;
+            background: skyblue;
+            margin-left: 250px;
+            margin-top: 30px;
+            padding: 20px;
+            box-shadow: 10px 5px 5px gray;
+
+        }
+        .tip{
+            background: skyblue; 
+            border-radius: 20px;
+        }
+        .pit{
+            Width: 200Px;
+            border-radius: 20px;
+            margin-top: 30px;
+            margin-left: 100px;
+            background: blue;
+        }
+    </style>
+{% endblock css %}
+{% block content %}
+        <h2>NOUVEL EMPLOI DE TEMPS</h2>
+       <div class="andy"> 
+        <form class="tip" method="POST">
+         {% csrf_token %}
+         <div class="col">
+            <label class="mis" for="filière choisie">Filiere:</label > 
+            <select class="form-control" name="filiere">
+                <option  value="">----------</option>
+                {% for filiere in filieres %}
+                    <option class="sim" value="{{filiere.id}}"> {{filiere.nom}} </option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <div class="col">
+            <label class="mis" for="">Date de debut:</label>
+            <input class="sim" type="date" name="date_debut" id="">
+        </div>
+        <div class="col">
+            <label class="mis" for="">Date de fin:</label>
+            <input class="sim" type="date" name="date_fin" id="">
+        </div>
+    
+        <button class="pit" type="submit">Créer</button>
+        </form>
+    </div>
+{% endblock %}

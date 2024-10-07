@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block css %}
+<style>
+    h2{
+       text-align: center; 
+       font-weight: bold;
+    }
+    .sim{
+        display: block;
+        margin-left: 20px;
+        width: 400px;
+        border-radius: 50px;
+        
+    }
+    .form-control{
+        display: block;
+        margin-left: 20px;
+        width: 400px;
+        border-radius: 50px;
+    }
+    .mis{
+        font-weight: bold;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+    .andy{
+        Width: 500Px;
+        height: 400px;
+        border-radius: 20px;
+        background: skyblue;
+        margin-left: 250px;
+        margin-top: 30px;
+        padding: 20px;
+        box-shadow: 10px 5px 5px gray;
+
+    }
+    .tip{
+        background: skyblue; 
+        border-radius: 20px;
+    }
+    .pit{
+        Width: 200Px;
+        border-radius: 20px;
+        margin-top: 30px;
+        margin-left: 100px;
+        background: blue;
+    }
+    body{
+        background: radial-gradient(skyblue, whitesmoke);
+    }
+    
+</style>
+{% endblock css %}
+{% block content %}
+<h2>Ajouter des activités</h2>
+       <div class="andy"> 
+        <form class="tip" method="POST">
+         {% csrf_token %}
+         <div class="col">
+            <label class="mis" for="jour">Jour:</label > 
+           <input class="sim" type="text" name="jour">
+        </div>
+        <div class="col">
+            <label class="mis" for="jour">Activites:</label > 
+           <input class="sim" type="text" name="matiere">
+        </div>
+        <div class="col">
+            <label class="mis" for="">Heure de debut:</label>
+            <input class="sim" type="time" name="heure_debut" id="">
+        </div>
+        <div class="col">
+            <label class="mis" for="">Heure de fin:</label>
+            <input class="sim" type="time" name="heure_fin" id="">
+        </div>
+    
+        <button class="pit" type="submit">Ajouter</button>
+        </form>
+    </div>
+
+<h3>Activités ajoutées :</h3>
+<ul>
+    {% for activite in activites_jour %}
+        <li>{{ activite.jour }} : {{ activite.matiere }} de {{ activite.heure_debut }} à {{ activite.heure_fin }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+                                                                                      

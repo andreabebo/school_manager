@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+
+{% endblock title %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+     <h1>Paramètres utilisateur</h1>
+
+     <form method="POST" enctype="multipart/form-data">
+         {% csrf_token %}
+         <table>
+             <tr>
+                 <th>Changer le fond d'écran :</th>
+                 <td>{{ form.fond_ecran }}</td>
+             </tr>
+             <tr>
+                 <th>Choisir la langue :</th>
+                 <td>{{ form.langue }}</td>
+             </tr>
+         </table>
+    
+         <button type="submit" class="btn btn-primary">Sauvegarder</button>
+     </form>
+
+     {% if parametres.fond_ecran %}
+        <h3>Aperçu du fond d'écran :</h3>
+         <img src="{{ parametres.fond_ecran.url }}" alt="Fond d'écran" style="max-width: 300px;">
+     {% endif %}
+
+
+{% endblock content %}

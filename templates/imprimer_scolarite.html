@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}
+Imprimer
+{% endblock title %}
+{% block css %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            }
+            
+            .receipt {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+            }
+            
+            h1, h2 {
+            text-align: center;
+            font-weight: bold;
+            font-family:'Courier New', Courier, monospace
+            }
+            
+            p {
+            font-size: 16px;
+            line-height: 1.5;
+            font-family:'Courier New', Courier, monospace
+            }
+            
+            .mike {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            }
+            
+            .mike:hover {
+            background-color: #218838;
+            }
+
+    </style>
+{% endblock css %}
+{% block content %}
+    
+
+<div class="receipt">
+    <h1>CFPTAC</h1>
+    <h2>Reçu de Paiement de la scolarité</h2>
+    <p><strong><b>Année de Formation :</b></strong> <span id="year">2024-2025</span></p>
+    <p><strong><b>Nom de l'Étudiant :</b></strong> <span id="paiement.student.user.get_full_name">{{paiement.student.user.get_full_name}}</span></p>
+    <p><strong><b>Filière :</b></strong> <span id="student.filiere"> {{paiement.student.filiere}} </span></p>
+    <p><strong><b>Date de paiement :</b></strong> <span id="paiement.date_paiement"></span> {{paiement.date_paiement}} FCFA</p>
+    <p><strong><b>Heure de paiement :</b></strong> <span id="paiement.heure_paiement"></span> {{paiement.heure_paiement}} FCFA</p>
+    <p><strong><b>Montant total:</b></strong> <span id="paiement.montant_total"> {{paiement.montant_total}} </span></p>
+    <p><strong><b>Montant verse:</b></strong> <span id="paiement.montant_verse"> {{paiement.montant_verse}} </span></p>
+    <p><strong><b>Reste :</b></strong> <span id="paiement.montant_restant"> {{paiement.montant_restant}} </span> FCFA</p>
+    <p><strong><b>État :</b></strong> <span id="paiement.etat_scolarite"> {{paiement.etat_scolarite}} </span></p>
+    <button class="mike" onclick="printReceipt()">Imprimer le reçu</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+```
+
+
+
+<script>
+
+function printReceipt() {
+    window.print();
+}
+</script>
+
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+<html>
+    <head>
+
+        {% block title %}{% endblock title %}
+    </head>
+    <body> 
+        {% block content %}
+<div class="theme-content">
+    <div class="console-log">
+        <div class="log-content">
+            <img src="static/images/midnight_blue.png" alt="Evo Calendar - Theme: Midnight Blue">
+<pre><code>
+$(<span class="red">'#calendar'</span>).<span class="yellow">evoCalendar</span>({
+theme: <span class="violet">'Midnight Blue'</span>
+})
+
+</code></pre>
+        </div>
+    </div>>
+</div>
+<div class="action-buttons">
+    <button class="btn-action" id="addBtn">ADD EVENT</button>
+    <button class="btn-action" id="removeBtn" >REMOVE EVENT</button>
+</div>
+{% endblock content %}
+</body>
+
+</html>

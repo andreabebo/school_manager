@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+        .card-body{
+            width: 800PX;
+        }
+
+    </style>
+{% endblock css %}
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="container"> 
+        <h1>Session</h1>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body"><canvas id="BarChart" ></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block js %}
+<script>
+    var ctx = document.getElementById("BarChart");
+    var myLineChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{labels|safe}},
+        datasets: [{
+        label: "Total inscrits",
+        backgroundColor: "rgba(2,117,216,1)",
+        borderColor: "rgba(2,117,216,1)",
+        data: {{data|safe}},
+        }],
+    },
+    options: {
+        scales: {
+            yAxes: [{
+              ticks: {
+                min: 0,
+              },
+              gridLines: {
+                display: true
+              }
+            }],
+            responsive: true,
+            maintainAspectRation: false
+        },
+    }
+    });
+</script>
+{% endblock js %}

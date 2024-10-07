@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: #B0E0E6;
+
+        }
+       
+        h1{
+            text-align: center;
+            font-weight: bold;
+            font-family: robotto;
+
+        }
+        .container{
+            border: none;
+            height: 500px;
+            margin-left: 30px;
+        }
+        .row{
+            margin-bottom: 60px;
+        }
+        input{
+            display: block;
+            border-radius: 20px;
+            width: 200px;
+        }
+        .form-control{
+            display: block;
+            border-radius: 20px;
+            width: 200px;
+        }
+        button{
+            margin-left: 350px;
+            width: 200px;
+            border-radius: 8px;
+            background: blue;
+            color: white;
+        }
+        label{
+            font-weight: bold;
+        }
+    </style>
+
+{% endblock css %}
+{% block content %}
+    <div class="container">
+            <h1>Modifier les informations de {{ user.first_name }} {{ user.last_name }}</h1>
+                <form class="form" method="post" > 
+                {% csrf_token %}
+                    <div class="row">
+                        <div class="col"> 
+                         <label for="nom">Noms:</label> 
+                            <input type="text" name="last_name" value='{{student.user.last_name}}'>
+                        </div>
+                        <div class="col">
+                            <label for="prenom">Prénoms:</label> 
+                            <input type="text" name="first_name" value='{{student.user.first_name}}'>
+                        </div>
+                        <div class="col">
+                            <label for="age">Date de naissance:</label> 
+                            <input type="date" name="age" required value='{{studentAge}}'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="email">Email:</label> 
+                            <input type="email" name="email" required value='{{student.user.email}}'>
+                        </div>
+                        <div class="col">
+                            <label for="ville">Ville:</label> 
+                            <input type="text" name="ville" value='{{student.ville}}'>
+                        </div>
+                        <div class="col">
+                            <label for="diplome">Diplome récent:</label> 
+                            <input type="text" name="diplome" required value='{{student.diplome}}'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="filière choisie">Filiere:</label > 
+                            <select class="form-control" name="filiere">
+                                <option  value="">----------</option>
+                                {% for filiere in filieres %}
+                                    <option value="{{filiere.id}}"> {{filiere.nom}} </option>
+                                {% endfor %}
+                            </select>
+                        <div class="col">
+                            <label for="contact">Contact:</label> 
+                            <input type="tel" name="contact" value='{{student.contact}}'>
+                        </div>
+                        <div class="col">
+                            <label for="nom">Mot de passe:</label> 
+                            <input type="password" name="password"value='{{student.user.password}}'>
+                        </div>
+                    </div>
+                        <button type="submit">Sauvegarder</button><br>
+                        <a href="{% url 'listeEtudiant' %}">Retour à la liste</a>
+                </form>
+    </div>
+{% endblock content %}            

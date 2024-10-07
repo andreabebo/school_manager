@@ -1,0 +1,36 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.acceuil, name='base'),
+    path('connexion/', views.connexion, name='connexion'),
+    path('ajout_session/', views.ajout_session, name='ajout_session'),
+    path('choix_session/', views.choix_session, name='choix_session'),
+    path('ajouterEtudiant/<int:session_id>', views.ajouterEtudiant, name='ajouterEtudiant'),
+    path('listeEtudiant', views.listeEtudiant, name='listeEtudiant'),
+    path('rechercher_etudiants/', views.rechercher_etudiants, name='rechercher_etudiants'),
+    path('desactiver_utilisateur/<int:user_id>', views.desactiver_utilisateur, name='desactiver_utilisateur'),
+    path('edit_user/<int:user_id>', views.edit_user, name='edit_user'),
+    path('publier_cours', views.publier_cours, name='publier_cours'),
+    path('detail_cours/<int:pk>', views.detail_cours, name='detail_cours'),
+    path('cours', views.cours, name='cours'),
+    path('creer_emploi_de_temps', views.creer_emploi_de_temps, name='creer_emploi_de_temps'), 
+    path('ajouter_activites/<int:emploi_de_temps_id>', views.ajouter_activites, name='ajouter_activites'),
+    path('afficher_emploi_de_temps/<int:emploi_de_temps_id>', views.afficher_emploi_de_temps, name='afficher_emploi_de_temps'),
+    path('deconnexion', views.deconnexion, name='deconnexion'),
+    path('professeur', views.professeur, name='professeur'),
+    path('listeProf', views.listeProf, name='listeProf'),
+    path('desactiver_professeur/<int:user_id>', views.desactiver_professeur, name='desactiver_professeur'),
+    path('edit_prof/<int:user_id>', views.edit_prof, name='edit_prof'),
+    path('compte/<int:user_id>', views.compte, name='compte'),
+    path('edit_compte/<int:user_id>', views.edit_compte, name='edit_compte'),
+    path('scolarite', views.scolarite, name='scolarite'),
+    path('afficher_scolarite', views.afficher_scolarite, name='afficher_scolarite'),
+    path('imprimer_scolarite/<int:pk>', views.imprimer_scolarite, name='imprimer_scolarite'),
+    path('filiere', views.filiere, name='filiere'),
+    path('liste_filiere', views.liste_filiere, name='liste_filiere'),
+    path('desactiver_filiere/<int:filiere_id>', views.desactiver_filiere, name='desactiver_filiere'),
+    path('statistiques', views.statistiques, name='statistiques'),
+    path('ajout_stat', views.ajout_stat, name='ajout_stat'),
+    
+]

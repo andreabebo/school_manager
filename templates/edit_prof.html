@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}
+Ajouter un professeur
+{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: whitesmoke;
+
+         }
+   
+        h1{
+            text-align: center;
+            font-weight: bold;
+            font-family: robotto;
+
+        }
+        .container{
+            border: 5PX SOLID BLACK;
+            border-radius: 1200px;
+            height: 500px;
+            width: 550px;
+            margin-left: 200px;
+            margin-top: 02px;
+            padding: 10px;
+            background: skyblue;
+        }
+        .row{
+            margin-bottom: 60px;
+        }
+        input{
+            display: block;
+            border-radius: 20px;
+            width: 200px;
+        }
+        button.ip{
+            margin-left: 180px;
+            width: 100px;
+            height: 30px;
+            margin-bottom: 5px;
+            border-radius: 500px;
+            background: blue;
+            color: white;
+        }
+        label{
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        form{
+            margin-top: 75px;
+            margin-left: 35px;
+        }
+        input,label{
+            margin-top: 0px;
+        }
+        
+    </style>
+{% endblock css %}
+{% block content %}
+
+    <div class="container">
+        
+            <form class="form" method="post" class="form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col">
+                        <label for="#username">Noms:</label>
+                        <input type="text" name="last_name" value='{{professeur.user.last_name}}'><br>
+                    </div>
+                    <div class="col">
+                        <label for="#username">Prénoms:</label>
+                        <input type="text" name="first_name" value='{{professeur.user.first_name}}'><br>
+                    </div>
+                    <div class="col">
+                        <label for="#email">Email:</label>
+                        <input type="email" name="email" value='{{professeur.user.email}}'><br>
+                    </div>
+                    <div class="col">
+                        <label for="#username">Date de naissance:</label>
+                        <input type="date" name="age" value='{{professeurAge}}'><br>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="#password">Specialite:</label>
+                        <input type="text" name="specialite" value='{{professeur.specialite}}'><br>
+                    </div>
+                    <div class="col">        
+                        <label for="#username">Telephone:</label>
+                        <input type="tel" name="numero" value='{{professeur.numero}}'><br>
+                    </div>
+                    <div class="col">
+                        <label for="#password">Mot de passe:</label>
+                        <input type="password" name="password" value='{{professeur.user.password}}'><br>
+                    </div>    
+                </div>
+                <button class="ip" type="submit">Modifier</button>
+            </form>
+            <a href="{% url 'listeProf' %}">Retour à la liste</a>
+        </div>
+
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+    .chim{
+        width: 420px;
+        height: 400px;
+        background: skyblue;
+        border-radius: 100px;
+        box-shadow: 10px 5px 5px gray;
+        margin-left: 300px;
+    }
+    
+    .nick{
+        width: 400px;
+        height: 100px;
+        border-radius: 100px;
+        margin-top: 40px;
+        margin-left: 70px;
+    }
+    .shim{
+        display: block;
+        margin-top: 30px;
+        border-radius: 50px;
+        width: 300px;
+    }
+
+    .lis{
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    .sim{
+        width: 120px;
+        margin-left: 70px;
+        border-radius: 10px;
+        background: blue;
+        color: white;
+    }
+    h1{
+        text-align: center;
+        font-weight: bold;
+    }
+    </style>
+{% endblock css %}
+{% block content %}
+        <h1>STATISTIQUES</h1>
+    <div class="chim">
+        <form class="nick" method="post" >
+            {% csrf_token %}
+            <label class="lis"  for="">Date de la session:</label>
+            <input class="shim" type="date" name="date_session"><br>
+            <label class="lis" for="">Nom de la session:</label>
+            <input class="shim" type="month" name="nom_session"><br>
+            <label class="lis" for="">Nombre d'inscrits:</label>
+            <input class="shim" type="number" name="inscrits"><br>
+            <input class="sim" type="submit" name="button" id="">
+        </form>
+    </div>    
+
+
+{% endblock content %}
+{% block js %}
+
+{% endblock js %}

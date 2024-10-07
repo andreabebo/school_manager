@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+{% block content %}
+<h1>Emploi du temps de {{ EmploiDeTemps.date_debut }} {{ EmploiDeTemps.date_fin }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Heure</th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+                <th>Samedi</th>
+                <th>Dimanche</th>
+            </tr>
+        </thead>
+        <tbody id="scheduleTable">
+            <!-- Le tableau dynamique sera inséré ici avec JavaScript -->
+        </tbody>
+    </table>
+    <button type="submit">Enregistrer</button>
+    <button type="button" onclick="generateSchedule()">Générer l'emploi du temps</button>
+    <button type="button" onclick="exportToPDF()">Exporter en PDF</button>
+    <button type="button" onclick="exportToExcel()">Exporter en Excel</button>
+</form>
+<div id="generatedSchedule"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="{% static/js/emploi_du_temps.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+<style>
+    h1{
+        text-align: center;
+        font-weight: bolder;
+    }
+    table{
+        margin-left: 200px;
+        border: 4px solid black;
+        margin-top: 30px;
+        width: 800px;
+    }
+        
+     .soldé {
+         background-color: #d4edda;
+         color: #155724;
+     }
+
+     .non-soldé {
+         background-color: #f8d7da;
+         color: #721c24;
+     }
+    tr{
+        border: 2px solid black;
+    }
+    .slim{
+        background: pink;
+    }
+    td{
+        border:  2px solid black;
+    }
+    .mik{
+        background: red;
+        border-radius: 5px;
+    }
+    .sit{
+        text-decoration: none;
+        color: black;
+    }
+     </style>
+{% endblock css %}
+{% block content %}
+     <h1>LISTE DES FILIERES</h1>
+
+     <table border="1" cellpadding="10" cellspacing="0">
+        <thead class="slim">
+        <tr>
+            
+             <th>id</th>
+             <th>Types</th>
+             <th>Noms</th>
+             <th>Inscrits</th>
+             <th>Option</th>
+           
+         </tr>
+        </thead>
+         {% for filiere in filieres %}
+         <tr id="filiere-{{filiere.id}}">
+            <tbody>
+             <td>{{ filiere.id }}</td>
+             <td>{{ filiere.departement }}</td>
+             <td>{{ filiere.nom }}</td>
+             <td>{{ filiere.total_inscrit }}</td>
+             <td><button class="mik"><a class="sit" href="{% url 'desactiver_filiere' filiere.id %}">Desactiver</a></button></td>
+            </tbody>
+         </tr>
+            {% endfor %}
+     </table>
+
+
+
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block css %}
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 5px;
+    text-align: center;
+    border: 4px solid #ddd;
+}
+
+th {
+    background-color: bisque;
+}
+h1{
+    text-align: center;
+    font-weight: bold;
+}
+
+</style>
+{% endblock css %}
+{% block content %}
+<h1>EMPLOI DE TEMPS</h1>
+<table border="1">
+    <tr>
+        <th>Date</th>
+        <th>Heure de début</th>
+        <th>Heure de fin</th>
+        <th>Matière</th>
+        <th>Professeur</th>
+        <th>Numéro du Professeur</th>
+        <th>Salle</th>
+    </tr>
+    {% for cours in emploiTemps %}
+    <tr>
+        <td>{{ cours.date_cours }}</td>
+        <td>{{ cours.heure_debut }}</td>
+        <td>{{ cours.heure_fin }}</td>
+        <td>{{ cours.matiere.nom }}</td>
+        <td>{{ cours.professeur.numero }}</td>
+        <td>{{ cours.salle.nom }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

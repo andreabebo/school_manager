@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}compte{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: skyblue;
+        }
+        form{
+            
+            width: 100%;
+            height: 25%;
+            margin-left: 20px;
+            margin-top: 0px;
+        }
+        .container{
+            
+            margin-left: 100px;
+            margin-top: 5px;
+            width: 50%;
+        }
+        .sit {
+            width: 600px;
+            display: block;
+            border-radius: 20px;
+            border: none;
+        }
+        .ring{
+            width: 200px;
+            border: 4PX solid black;
+            
+        }
+        label{
+            font-weight: bold;
+        }
+        .nina{
+            width: 100px;
+            margin-left: 450px;
+            background-color: rgb(0, 60, 255);
+            color: white;
+            border-radius: 10px;
+        }
+    </style> 
+{% endblock css %}
+{% block content %}
+    <div class="container">
+        <form class="form" method="post" enctype="multipart/form-data" action="{% url 'edit_compte' user.id %}">
+            {% csrf_token %}
+            {% if user.profile_image %}
+                <img class="ring" src="{{user.profile_image.url}}"><br>
+            {% else %}
+                <img class="ring" src="/static/images/formateur.PNG"><br>
+            {% endif %}
+            <input class="sit" type="file" name="image"><br>
+            <label for="">Noms:</label>
+            <input class="sit" type="text"  name="last_name" value='{{user.last_name}}'><br>
+            <label for="">Prenoms:</label>
+            <input class="sit" type="text"  name="first_name" value='{{user.first_name}}'><br>
+            <label for="">Adresse email:</label>
+            <input class="sit" type="email" name="email" value='{{user.email}}'><br>
+            <label for="">Mot de passe:</label>
+            <input class="sit" type="password"  name="password"><br>
+            <button class="nina" type="submit">Modifier</button>
+        </form>
+    </div>
+{% endblock content %}

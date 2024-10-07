@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}{% endblock title %}
+{% block css %}
+    <style>
+        body{
+            background: rgb(196, 228, 255);
+
+        }
+       
+        h1{
+            text-align: center;
+            font-weight: bold;
+            font-family: robotto;
+
+        }
+        .container{
+            border: none;
+            height: 500px;
+            margin-left: 100px;
+            margin-top: 20px;
+        }
+        .row{
+            margin-bottom: 60px;
+        }
+        input{   display: block;
+            border-radius: 20px;
+            width: 300px;
+        }
+        .pip{
+            margin-left: 330px;
+            width: 200px;
+            border-radius: 8px;
+            background: black;
+            color: white;
+        }
+        label{
+            font-weight: bold;
+        }
+        .sid{
+            width: 300px;
+        }
+        .form-control{
+            border-radius: 40px;
+            width: 300px;
+        }
+    </style>
+
+{% endblock css %}
+{% block content %}
+        <h1>SCOLARITE</h1>
+    <div class="container">
+         <form class="form" method="post">
+            {% csrf_token %}
+             
+            <div class="row">
+                   <div class="col">
+                        <label for="filière choisie">Etudiant:</label> 
+                        <select class="form-control" name="student">
+                            <option value="">----------
+                                {% for student in students %}
+                                    <option value="{{student.pk}}"> {{student.user.get_full_name}} </option>
+                                {% endfor %}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col"> 
+                        <label for="">Date de paiement:</label> 
+                        <input type="date" name="date_paiement">
+                    </div>
+                </div>
+            <div class="row">  
+                   
+                <div class="col">
+                    <label for="">heure:</label> 
+                    <input type="time" name="heure_paiement">
+                </div>
+                <div class="col">
+                    <label for="">Tranche:</label> 
+                    <input type="number" name="tranche" required>
+                </div>
+            </div>
+                <div class="row">
+                <div class="col"> 
+                    <label for="">Montant total:</label> 
+                    <input class="sid" type="decimal" name="montant_total">
+                </div>
+                <div class="col">
+                    <label for="">Montant verse:</label> 
+                    <input class="sid" type="decimal" name="montant_verse">
+                </div>
+             </div>
+                <button class="pip" type="submit">Enregistrer</button><br>
+        </form>   
+      
+    </div>
+{% endblock content %}
