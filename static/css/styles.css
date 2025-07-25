@@ -78,6 +78,27 @@
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff3cd;
 }
+:root {
+  --bg-color: white;
+  --text-color: black;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: white;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: sans-serif;
+  transition: all 0.3s ease;
+}
+button {
+  padding: 10px;
+  margin-top: 20px;
+  cursor: pointer;
+}
 
 *,
 *::before,

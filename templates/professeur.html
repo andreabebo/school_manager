@@ -5,53 +5,33 @@ Ajouter un professeur
 {% block css %}
     <style>
         body{
-            background: whitesmoke;
-
-         }
-   
+            background: rgb(112, 200, 205);
+        }
+       
         h1{
             text-align: center;
             font-weight: bold;
             font-family: robotto;
-
         }
         .container{
-            box-shadow: 10px 5px 5px gray;
-            border-radius: 100px;
+            border: none;
             height: 500px;
-            width: 550px;
-            margin-left: 200px;
-            margin-top: 02px;
-            padding: 10px;
-            background: rgb(206, 206, 50);
         }
         .row{
             margin-bottom: 60px;
         }
-        input{
-            display: block;
-            border-radius: 20px;
-            width: 200px;
+        .container .row .col{
+            margin-top: 10px;
         }
-        button.ip{
-            margin-left: 180px;
-            width: 100px;
-            height: 30px;
-            margin-bottom: 5px;
-            border-radius: 500px;
+        .btn.btn-secondary{
+            margin-left: 400px;
+            width: 200px;
+            border-radius: 8px;
             background: black;
             color: white;
         }
         label{
             font-weight: bold;
-            margin-left: 10px;
-        }
-        form{
-            margin-top: 75px;
-            margin-left: 35px;
-        }
-        input,label{
-            margin-top: 0px;
         }
         
     </style>
@@ -62,38 +42,38 @@ Ajouter un professeur
         
             <form class="form" method="post" action="{% url 'professeur' %}" class="form">
                 {% csrf_token %}
-                <div class="row">
+                <div class="row row-cols-2">
                     <div class="col">
                         <label for="#username">Noms:</label>
-                        <input type="text" name="last_name"><br>
+                        <input class="form-control sip" type="text" name="last_name"><br>
                     </div>
                     <div class="col">
                         <label for="#username">Prénoms:</label>
-                        <input type="text" name="first_name"><br>
+                        <input class="form-control sip" type="text" name="first_name"><br>
                     </div>
                     <div class="col">
                         <label for="#email">Email:</label>
-                        <input type="email" name="email"><br>
+                        <input class="form-control sip" type="email" name="email"><br>
                     </div>
                     <div class="col">
                         <label for="#username">Date de naissance:</label>
-                        <input type="date" name="age"><br>
+                        <input class="form-control sip" type="date" name="age"><br>
                 </div>
-                <div class="row">
+                
                     <div class="col">
                         <label for="#password">Specialite:</label>
-                        <input type="text" name="specialite"><br>
+                        <input class="form-control sip" type="text" name="specialite"><br>
                     </div>
                     <div class="col">        
                         <label for="#username">Telephone:</label>
-                        <input type="tel" name="numero" required><br>
+                        <input class="form-control sip" type="tel" name="numero" required><br>
                     </div>
                     <div class="col">
                         <label for="#password">Mot de passe:</label>
-                        <input type="password" name="password"><br>
+                        <input class="form-control sip" type="password" name="password"><br>
                     </div>    
                 </div>
-                <button class="ip" type="submit">S'inscrire</button>
+                <button class="btn btn-secondary" type="submit">Ajouter</button><br>
             </form>
             
         </div>

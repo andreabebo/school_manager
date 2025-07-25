@@ -52,7 +52,7 @@ def ajout_session(request):
         print(nom_session, date_session) 
         session=Session.objects.create( nom_session=nom_session, date_session=date_session)
         session.save()
-        return redirect('ajouterEtudiant')
+        return redirect('ajout_session')
     return render(request, 'ajout_session.html')
 
 @login_required
@@ -249,8 +249,8 @@ def afficher_emploi_de_temps(request, emploi_de_temps_id):
 @login_required
 def professeur(request):
     if request.method == 'POST':
-        nom = request.POST.get('nom') 
-        prenom = request.POST.get('prenom') 
+        nom = request.POST.get('last_name') 
+        prenom = request.POST.get('first_name') 
         email = request.POST.get('email')
         age= request.POST.get('age')  
         specialite = request.POST.get('specialite') 
@@ -260,7 +260,7 @@ def professeur(request):
         user=User.objects.create(first_name=prenom, last_name=nom, email=email, password=password)
         user.save() 
         professeur=Professeur.objects.create(age=age, specialite=specialite, numero=numero, user=user)
-        Professeur.save()
+        professeur.save()
         return redirect('listeProf')
     return render(request, 'professeur.html') 
 
@@ -435,3 +435,4 @@ def ajout_stat(request):
         statistiques.save()
         return redirect('statistiques')
     return render(request, 'ajout_stat.html') 
+

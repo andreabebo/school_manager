@@ -2,58 +2,72 @@
 {% block title %}{% endblock title %}
 {% block css %}
     <style>
-    .chim{
-        width: 420px;
-        height: 400px;
-        background: skyblue;
-        border-radius: 100px;
-        box-shadow: 10px 5px 5px gray;
-        margin-left: 300px;
-    }
-    
-    .nick{
-        width: 400px;
-        height: 100px;
-        border-radius: 100px;
-        margin-top: 40px;
-        margin-left: 70px;
-    }
-    .shim{
-        display: block;
-        margin-top: 30px;
-        border-radius: 50px;
-        width: 300px;
-    }
+        .andy form{
+            Width: 500Px;
+            height: 310px;
+            border-radius: 20px;
+            background: skyblue;
+            padding: 20px;
+            
+
+        }
+        .form-control shim{
+            display: block;
+            margin-left: 20px;
+            width: 400px;
+          
+            
+        }
 
     .lis{
         margin-top: 10px;
         font-weight: bold;
     }
-    .sim{
-        width: 120px;
-        margin-left: 70px;
-        border-radius: 10px;
-        background: blue;
-        color: white;
-    }
+   
     h1{
         text-align: center;
         font-weight: bold;
     }
+    
+    .row{
+        margin-bottom: 60px;
+    }
+    .andy .row .col{
+        margin-top: 10px;
+        
+    }
+    .btn.btn-secondary{  
+        width: 200px;
+        border-radius: 8px;
+        background: blue;
+        color: white;
+        margin-top: 15px;
+    }
     </style>
 {% endblock css %}
 {% block content %}
+
         <h1>STATISTIQUES</h1>
-    <div class="chim">
+    <div class="andy d-flex justify-content-center">
         <form class="nick" method="post" >
             {% csrf_token %}
-            <label class="lis"  for="">Date de la session:</label>
-            <input class="shim" type="date" name="date_session"><br>
-            <label class="lis" for="">Nom de la session:</label>
-            <input class="shim" type="month" name="nom_session"><br>
-            <label class="lis" for="">Nombre d'inscrits:</label>
-            <input class="shim" type="number" name="inscrits"><br>
-            <input class="sim" type="submit" name="button" id="">
+            
+                <div class="col">
+                    <label class="lis"  for="">Date de la session:</label>
+                    <input class="form-control shim" type="date" name="date_session">
+                </div>
+                <div class="col">
+                    <label class="lis" for="">Nom de la session:</label>
+                    <input class="form-control shim" type="month" name="nom_session">
+                </div>
+                <div class="col">
+                    <label class="lis" for="">Nombre d'inscrits:</label>
+                    <input class="form-control shim" type="number" name="inscrits">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-secondary">Creer</button>
+                </div>
+            
         </form>
     </div>    
 

@@ -6,30 +6,29 @@
            text-align: center; 
            font-weight: bold;
         }
-        .sim{
+        .form-control.sim{
             display: block;
             margin-left: 20px;
             width: 400px;
-            border-radius: 50px;
+          
             
         }
-        .form-control{
+        .form-control.filiere{
             display: block;
             margin-left: 20px;
             width: 400px;
-            border-radius: 50px;
+            
         }
         .mis{
             font-weight: bold;
             margin-left: 20px;
             margin-top: 10px;
         }
-        .andy{
+        .andy form{
             Width: 500Px;
-            height: 300px;
+            height: 330px;
             border-radius: 20px;
             background: skyblue;
-            margin-left: 250px;
             margin-top: 30px;
             padding: 20px;
             box-shadow: 10px 5px 5px gray;
@@ -39,23 +38,23 @@
             background: skyblue; 
             border-radius: 20px;
         }
-        .pit{
+        .btn.btn-secondary{
             Width: 200Px;
             border-radius: 20px;
             margin-top: 30px;
-            margin-left: 100px;
-            background: blue;
+            margin-left: 120px;
+            
         }
     </style>
 {% endblock css %}
 {% block content %}
         <h2>NOUVEL EMPLOI DE TEMPS</h2>
-       <div class="andy"> 
+       <div class="andy d-flex justify-content-center"> 
         <form class="tip" method="POST">
          {% csrf_token %}
          <div class="col">
             <label class="mis" for="filière choisie">Filiere:</label > 
-            <select class="form-control" name="filiere">
+            <select class="form-control filiere" name="filiere">
                 <option  value="">----------</option>
                 {% for filiere in filieres %}
                     <option class="sim" value="{{filiere.id}}"> {{filiere.nom}} </option>
@@ -65,14 +64,14 @@
     
         <div class="col">
             <label class="mis" for="">Date de debut:</label>
-            <input class="sim" type="date" name="date_debut" id="">
+            <input class="form-control sim" type="date" name="date_debut" id="">
         </div>
         <div class="col">
             <label class="mis" for="">Date de fin:</label>
-            <input class="sim" type="date" name="date_fin" id="">
+            <input class="form-control sim" type="date" name="date_fin" id="">
         </div>
     
-        <button class="pit" type="submit">Créer</button>
+        <button class="btn btn-secondary" type="submit">Créer</button>
         </form>
     </div>
 {% endblock %}

@@ -21,6 +21,13 @@
             text-align: center;
             font-weight: bolder;
         }
+        .nime{
+            width: 300px;
+            
+        }
+        .tip{
+            margin-left: 25px;
+        }
     </style>
 {% endblock css %}
 {% block content %}
@@ -30,8 +37,8 @@
 </div>
 <div class="suit">
 <form method="get" id="myForm" action="{% url 'rechercher_etudiants' %}">
-    <label>Session</label>
-    <select name="session" id="selectOption">
+    <label class="tip"><b>Session</b></label>
+    <select class="nime" name="session" id="selectOption">
         <option value="">--------------</option>
         {% for session in sessions %}
             <option value="{{session.pk}}" {% if session.pk == session_id %}selected{% endif %}>{{session.nom_session}}</option>

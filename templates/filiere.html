@@ -1,56 +1,54 @@
 {% extends "base.html" %}
 {% block title %}{% endblock title %}
 {% block css %}
-    <style>
-    .chim{
-        width: 420px;
-        height: 300px;
-        background: skyblue;
-        border-radius: 100px;
-        box-shadow: 10px 5px 5px gray;
-        margin-left: 300px;
-    }
-    
-    .nick{
-        width: 400px;
-        height: 100px;
-        border-radius: 100px;
-        margin-top: 40px;
-        margin-left: 100px;
-    }
-    .shim{
-        display: block;
-        margin-top: 30px;
-        border-radius: 50px;
-    }
+    <style>    
+        .andy form{
+            Width: 500Px;
+            height: 260px;
+            border-radius: 20px;
+            background: skyblue;
+            margin-top: 30px;
+            padding: 20px;
+            box-shadow: 10px 5px 5px gray;
 
-    .lis{
-        margin-top: 10px;
-        font-weight: bold;
-    }
-    .sim{
-        width: 120px;
-        margin-left: 40px;
-        border-radius: 10px;
-        background: blue;
-        color: white;
-    }
-    h1{
-        text-align: center;
-        font-weight: bold;
-    }
+        }
+        .container .row .col{
+            margin-top: 10px;
+        }
+
+        .lis{
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .btn.btn-secondary{
+            Width: 200Px;
+            margin-top: 30px;
+        
+        }
+        h1{
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 {% endblock css %}
 {% block content %}
         <h1>NOUVELLE FILIERE</h1>
-    <div class="chim">
-        <form class="nick" method="post" >
-            {% csrf_token %}
-            <label class="lis"  for="">Departement:</label>
-            <input class="shim" type="text" name="departement"><br>
-            <label class="lis" for="">filiere:</label>
-            <input class="shim" type="text" name="nom"><br>
-            <input class="sim" type="submit" name="button" id="">
-        </form>
+     <div class="container">
+        <div class="andy d-flex justify-content-center">
+            <form class="nick" method="post" >
+                {% csrf_token %}
+                <div class="col">
+                    <label class="lis"  for="">Departement:</label>
+                    <input class="form-control sim" type="text" name="departement">
+                </div>
+                <div class="col">
+                    <label class="lis" for="">Filiere:</label>
+                    <input class="form-control sim" type="text" name="nom">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-secondary">Ajouter</button>
+                </div>
+            </form>
+        </div>
     </div>    
 {% endblock content %}
