@@ -1,5 +1,5 @@
 <Doctype!>
-<html>
+<html data-bs-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name= "viewport" content= "width=device-width, intial-scale=1.0">
@@ -16,22 +16,66 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <title>Connexion</title>
         <style>
-            .container .row .col{
-                margin-top: 15px;
+            
+            body{
+                margin: 0;
+                padding: 2rem;
                 
+                justify-content: center;
+               
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
             }
-            .form-control.sip{
-                background-color: whitesmoke;
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
             }
-            .andy form{
-                border-radius: 20px;
-                margin-top: 20px;
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                margin-top: 2rem;
+                padding: 2rem;
+                border-radius: 8px;
+                background-color: rgba(255,255,255,0.8);
+                transition:background-color 0.5s ease;
+               
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
             }
         </style>    
     </head>
-    <body class="bg-primary">
-        <div class="container">
-            <div class="andy d-flex justify-content-center h-100 align-items-center">
+    <body class="">
+        <div class="mb-3">
+            <label for="themeSelect" >Mode</label>
+            <i class="fa-solid fa-sun"></i>
+            
+            <select id="themeSelect"  onchange="switchTheme(this.value)">
+                <option value="light">Clair<i class="fa-solid fa-moon"></i></option>
+                <option value="dark">sombre</option>
+            </select>
+           <script>
+                window.onload = () => {
+                    const theme = localStorage.getItem("theme")|| "light";
+                document.body.className = theme;
+                document.getElementById("themeselect").value = theme;
+                };
+                function switchTheme(theme) {
+                    document.body.className = theme;
+                    localStorage.setItem("theme",theme);
+                }
+
+           </script>
+        </div>
+        
+        <div class="card">
+            <div class="text-body-secondary d-flex justify-content-center h-100 align-items-center" >
                 
 
                 <div class="w-50">
