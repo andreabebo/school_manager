@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms  import UserCreationForm
-from .models import Cours, Commentaire, EmploiDeTemps, Professeur, Salle, Matiere, ActiviteJour
+from .models import Cours, Commentaire, EmploiDeTemps, Professeur, Salle, Matiere, ActiviteJour, Note
 
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
@@ -67,6 +67,16 @@ class ActiviteJourForm(forms.ModelForm):
         }
 
 
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ["matiere", "coef", "note_cc", "note_sn"]
+        widgets = {
+            "matiere": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de la matière"}),
+            "coef": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Coefficient"}),
+            "note_cc": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Note contrôle continu"}),
+            "note_sn": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Note session normale"}),
+        }        
 
 
 

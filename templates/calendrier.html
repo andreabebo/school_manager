@@ -27,3 +27,200 @@ theme: <span class="violet">'Midnight Blue'</span>
 </body>
 
 </html>
+
+
+{% load static %}
+<Doctype!>
+<html data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta name= "viewport" content= "width=device-width, intial-scale=1.0">
+        <link href="/static/css/styles.css" rel="stylesheet" />
+        <link href="/static/css/fontawesome-free-6.6.0-desktop.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <title>Connexion</title>
+        <style>
+            
+            body{
+                margin: 0;
+                
+                padding: 2rem;
+               
+                justify-content: center;
+                
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
+            }
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                margin-top: 2rem;
+                padding: 2rem;
+                border-radius: 8px;
+                
+                
+                transition:background-color 0.5s ease;
+                
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
+            }
+            .toggle-eye{
+               
+                top: 50%;
+                
+                transform: translateY(-50%);
+                cursor:pointer;
+            }
+            .eye-icon{
+                display: block;
+            }
+            
+        </style>    
+    </head>
+    <body class="">
+        <div class="mb-3">
+            <label for="themeSelect" >Mode</label>
+            <select id="themeSelect"  onchange="switchTheme(this.value)">
+                <option value="light">Clair</i></option>
+                <option value="dark">sombre</option>
+            </select>
+           <script>
+                window.onload = () => {
+                    const theme = localStorage.getItem("theme")|| "light";
+                document.body.className = theme;
+                document.getElementById("themeselect").value = theme;
+                };
+                function switchTheme(theme) {
+                    document.body.className = theme;
+                    localStorage.setItem("theme",theme);
+                }
+
+           </script>
+        </div>
+        
+        <div class="card">
+            <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+            <div class="text-body-secondary d-flex justify-content-center h-100 align-items-center" >
+                
+
+                <div class="w-50">
+                    {% if messages %}
+                        <div class="error-messages">
+                        {% for message in messages  %}
+                            <p class="error">{{ message }}</p>
+                    {% endfor %}
+                        </div>
+                    {% endif %}
+                
+                    <form id="loginForm"  method="post" action="{% url 'connexion' %}" class="bg-white p-1">
+                        {% csrf_token %}
+                        <h1 class="text-center fw-bold">Connexion</h1>
+                        <div class="row flex-column m-3">
+                            <div class="col">
+                                <label for="#username">Adresse email:</label>
+                                <input class="form-control sip" type="text" name="username">
+                            </div>
+                            <div class="password-container">
+                                <label for="#password">Mot de passe:</label>
+                                <input class="form-control sip" type="password" name="password" id="password" required>
+                                <img src="{% static 'images/closed.png' %}" id="eye-icon" class="toggle-eye" onclick="togglePassword()">
+                            </div>
+                            <script>
+                                function togglePassword(){
+                                    const pwd = document.getElementById("password");
+                                    const eye = document.querySelector(".toggle-eye");
+                                    if(pwd.type == "password") {
+                                        pwd.type = "text";
+                                        eyeIcon.src = "{% static 'images/eye.png' %}";
+                                    }else{
+                                        pwd.type = "password";
+                                        eyeIcon.src = "{% static 'images/closed.png' %}";
+                                    }
+                                }
+                            </script>
+                            <div class="d-flex justify-content-center mt-4">
+                                <button class="btn btn-success  w-50 mb-2" type="submit" onclick="showSuccess('connexion reussie')">Connexion</button>
+                                <script>
+                                function showSuccess(message) {
+                                    Swal.fire({
+                                        icon:'success',
+                                        title: message,
+                                        showConfirmButton: false,
+                                        timer: 2500,
+                                        timerProgressBar: true,
+                                        position: 'center',
+                                        background: '#f0fdf4',
+                                        color:'#14532d',
+                                    });
+                                }
+                            </script>
+                            </div>
+                            
+                        </div>
+                        
+                    </form>      
+                    </div>
+                </div>
+            </div>
+    </body>       
+        
+</html>
+
+class Bulletin(models.Model):
+    student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    moyenne_generale = models.FloatField(default=0)
+    decision = models.CharField(max_length=50, choices=[
+        ('Admis', 'Admis'),
+        ('Ajourné', 'Ajourné')
+    ])
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Bulletin de {self.student.user.get_full_name()} - {self.decision}"
+
+
+        def ajouter_note(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    if request.method == "POST":
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.student = student
+            note.save()
+            messages.success(request, "Note ajoutée avec succès !")
+            return redirect("detail_student", student_id=student.id)
+    else:
+        form = NoteForm()
+    return render(request, "notes/ajouter_note.html", {"form": form, "student": student})
+
+def liste_notes(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
+    notes = Note.objects.filter(student=student)
+    moyenne = round(sum(n.valeur for n in notes) / len(notes), 2) if notes else None
+    return render(request, "notes/liste_notes.html", {
+        "student": student,
+        "notes": notes,
+        "moyenne": moyenne
+    })

@@ -6,9 +6,9 @@ from auth_app.models import User, Student
 from django.contrib.auth.forms  import UserCreationForm
 from .form import CustomUserCreationForm
 from django.contrib import messages
-from .form import CoursForm, EmploiDeTempsForm, CommentaireForm, ActiviteJourForm
+from .form import CoursForm, EmploiDeTempsForm, CommentaireForm, ActiviteJourForm, NoteForm
 from .models import Cours, Commentaire, EmploiDeTemps, Professeur, PaiementScolarite, Filiere, ActiviteJour, Stat, Session
-
+from django.contrib import messages
 
 
 # Create your views here.
@@ -24,14 +24,16 @@ def inscription(request):
 
 def connexion(request):
     if request.method == 'POST':
-      username = request.POST['username']
-      password = request.POST['password']
-      user = authenticate(request, username=username, password=password)
-      if user is not None:
-       login(request, user)
-       return redirect('base')
-    else:
-       messages.error(request, 'Username ou mot de passe incorrect.')
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('base')
+        else:
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+            # On renvoie le username pour pré-remplir le champ
+            return render(request, 'connexion.html', {"username": username})
     return render(request, 'connexion.html')
 
 
@@ -435,4 +437,11 @@ def ajout_stat(request):
         statistiques.save()
         return redirect('statistiques')
     return render(request, 'ajout_stat.html') 
+
+
+
+
+
+
+
 

@@ -47,7 +47,35 @@ Imprimer
             .mike:hover {
             background-color: #218838;
             }
-
+            
+            body{
+                margin: 0;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
+            }
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                
+                border-radius: 8px;
+                transition:background-color 0.5s ease;
+                
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
+            }
+            
     </style>
 {% endblock css %}
 {% block content %}

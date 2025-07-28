@@ -3,6 +3,7 @@
 {% block css %}
     <style>
         h2{
+            margin-top: 20px;
            text-align: center; 
            font-weight: bold;
         }
@@ -28,32 +29,61 @@
             Width: 500Px;
             height: 330px;
             border-radius: 20px;
-            background: skyblue;
+            background: whitesmoke;
             margin-top: 30px;
             padding: 20px;
             box-shadow: 10px 5px 5px gray;
 
         }
         .tip{
-            background: skyblue; 
+            background: whitesmoke; 
             border-radius: 20px;
         }
-        .btn.btn-secondary{
+        .btn.btn-primary{
             Width: 200Px;
             border-radius: 20px;
             margin-top: 30px;
             margin-left: 120px;
             
         }
+        
+            body{
+                margin: 0;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
+            }
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                
+                border-radius: 8px;
+                transition:background-color 0.5s ease;
+                
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
+            }
+            
     </style>
 {% endblock css %}
 {% block content %}
-        <h2>NOUVEL EMPLOI DE TEMPS</h2>
+        <h2> EMPLOI DE TEMPS HEBDOMADAIRE</h2>
        <div class="andy d-flex justify-content-center"> 
         <form class="tip" method="POST">
          {% csrf_token %}
          <div class="col">
-            <label class="mis" for="filière choisie">Filiere:</label > 
+            <label class="mis" for="filière choisie">Specialite:</label > 
             <select class="form-control filiere" name="filiere">
                 <option  value="">----------</option>
                 {% for filiere in filieres %}
@@ -71,7 +101,7 @@
             <input class="form-control sim" type="date" name="date_fin" id="">
         </div>
     
-        <button class="btn btn-secondary" type="submit">Créer</button>
+        <button class="btn btn-primary" type="submit">Créer</button>
         </form>
     </div>
 {% endblock %}

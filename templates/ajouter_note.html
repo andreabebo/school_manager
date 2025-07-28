@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block content %}
+<div class="container mt-4">
+    <h4>Ajouter une note pour {{ student.user.get_full_name }}</h4>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form %}
+            <div class="col-md-6 mb-3">
+                {{ field.label_tag }} {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger">{{ field.errors }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}
+{% block js%}
+{% endblock js%}

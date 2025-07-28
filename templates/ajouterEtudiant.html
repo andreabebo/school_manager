@@ -13,16 +13,9 @@
             font-family: robotto;
 
         }
-        .container{
-            border: none;
-            height: 500px;
-        }
-        .row{
-            margin-bottom: 60px;
-        }
-        .container .row .col{
-            margin-top: 15px;
-        }
+        
+        
+        
         .btn.btn-secondary{
             margin-left: 400px;
             width: 200px;
@@ -33,65 +26,100 @@
         label{
             font-weight: bold;
         }
+
+        
+            body{
+                margin: 0;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
+            }
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                
+                border-radius: 8px;
+                transition:background-color 0.5s ease;
+                
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
+            }
+            
     </style>
 
 {% endblock css %}
 {% block content %}
 
-    <div class="container">
-    
-         <form class="form" method="post">
-            {% csrf_token %}
-             <h1>INSCRIPTION</h1>
-            <div class="row row-cols-3">
-                    <div class="col"> 
-                        <label for="nom">Noms:</label> 
-                        <input class="form-control sip" type="text" name="last_name">
-                    </div>
-                    <div class="col">
-                        <label for="prenom">Prénoms:</label> 
-                        <input class="form-control sip" type="text" name="first_name">
-                    </div>
-                    <div class="col">
-                        <label for="age">Date de naissance:</label> 
-                        <input class="form-control sip" type="date" name="age" required>
-                    </div>
-            
-                    <div class="col">
-                        <label for="email">Email:</label> 
-                        <input class="form-control sip" type="email" name="email" required>
-                    </div>
-                    <div class="col">
-                        <label for="ville">Ville:</label> 
-                        <input class="form-control sip" type="text" name="ville">
-                    </div>
-                    <div class="col">
-                        <label for="diplome">Diplome récent:</label> 
-                        <input class="form-control sip" type="text" name="diplome" required>
-                    </div>
-            
-                   <div class="col">
-                    <label for="filière choisie">Filiere:</label > 
-                        <select class="form-control filiere" name="filiere">
+    <div class="card my-5 mx-5 shadow mb-5 bg-white rounded">
+        <div class="card-header">
+            <h4 class="card-title">Enregistrer un etudiant</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="row">
+                {% csrf_token %}
+                <div class="form-group col-4">
+                    <label for="day">Noms</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name">
+                </div>
+                <div class="form-group col-4">
+                    <label for="classe">Prenoms:</label>
+                    <input type="text" class="form-control" id="fisrt_name" name="first_name">
+                </div>
+                <div class="form-group col-4">
+                    <label for="date-end">Date de naissance :</label>
+                    <input type="date" class="form-control" id="date" name="age">
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="date-start">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="date-end">Ville :</label>
+                    <input type="text" class="form-control" id="ville" name="ville">
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="date-end">Diplome recent :</label>
+                    <input type="text" class="form-control" id="diplome" name="diplome">
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="date-end">Filiere :</label>
+                    <select class="form-control filiere" name="filiere">
                             <option  value="">----------</option>
                             {% for filiere in filieres %}
                                 <option value="{{filiere.id}}"> {{filiere.nom}} </option>
                             {% endfor %}
                         </select>
-                    </div>
-                    <div class="col">
-                         <label for="contact">Contact:</label> 
-                         <input class="form-control sip" type="tel" name="contact">
-                    </div>
-                    <div class="col">
-                        <label for="nom">Mot de passe:</label> 
-                        <input class="form-control sip" type="password" name="password">
-                    </div>
-                    </div>
-                    <button class="btn btn-secondary" type="submit">S'inscrire</button><br>
-            </div>
-                
-        </form>   
-      
-    </div>
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="date-end">Contact :</label>
+                    <input type="tel" class="form-control" id="contact" name="contact">
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="date-end">Mot de passe:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mt-4 w-25">Creer</button>
+                </div>
+            </form>
+        </div>
+    </div>  
+</div>
 {% endblock content %}

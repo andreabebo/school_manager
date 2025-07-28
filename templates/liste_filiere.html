@@ -2,39 +2,9 @@
 {% block title %}{% endblock title %}
 {% block css %}
 <style>
-    h1{
-        text-align: center;
-        font-weight: bolder;
-        font-family: 'Times New Roman', Times, serif;
-        text-decoration: underline;
+        h1{
+            text-align: center;
         }
-        
-        p {
-        font-size: 25px;
-        line-height: 1.5;
-        font-family: 'Times New Roman', Times, serif;
-        font-weight: bold;
-        }
-        
-        tbody{
-            background-color: whitesmoke;
-            border: 2px solid black;
-        }
-        
-       
-       
-        thead{
-            background-color: #c65228;
-            border: 2px solid black;
-            
-            
-        }
-        
-        table{
-            width: 900PX;
-            height: 300px;
-        }
-        
         .andy form{
             margin-top: 10px;
         }
@@ -46,41 +16,92 @@
             text-decoration: none;
             color: black;
         }
+        .left{
+            margin-left: 50px ;
+            size: 20px;
+        }
+        .fa-arrow-left{
+            font-size: 2em;
+            width: 35px;
+        }
+        
+            body{
+                margin: 0;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                transition: background-color 0.5s ease, color 0.5s ease;
+            }
+            body.light{
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            body.dark{
+                background-color: #121212;
+                color: #e4e6eb;
+            }
+            select{
+                padding: 0.5rem;
+                font-size: 1rem;
+            } 
+            .card{
+                
+                border-radius: 8px;
+                transition:background-color 0.5s ease;
+                
+            }   
+            body.dark .card{
+                background-color: rgba(255,255,255,0.05);
+            }
+            
      </style>
 {% endblock css %}
 {% block content %}
-     <h1>LISTE DES FILIERES</h1>
+     <h1>Specialites et classe(niveau)</h1>
+     <a class="left" href="{% url 'filiere' %}"><i class="fa-solid fa-arrow-left"></i></a> 
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="table-responsive">
+     <div class="container-fluid px-4">
     
-            <table  class="table table-bordered text-center">
-                <thead  class="thead-light">
-                <tr>
-            
-                <th>id</th>
-                <th>Types</th>
-                <th>Noms</th>
-                <th>Inscrits</th>
-                <th>Option</th>
-           
-                </tr>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Specialite et classe(niveau)
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Specialite</th>
+                        <th>Classe</th>
+                        <th>Inscrits</th>
+                        <th>Action</th>
+                        
+                       
+                    </tr>
                 </thead>
-            {% for filiere in filieres %}
-                <tr id="filiere-{{filiere.id}}">
                 <tbody>
-                    <td class="form-control-flex">{{ filiere.id }}</td>
-                    <td class="form-control-flex">{{ filiere.departement }}</td>
-                    <td class="form-control-flex">{{ filiere.nom }}</td>
-                    <td class="form-control-flex">{{ filiere.total_inscrit }}</td>
-                    <td><i class="fa-solid fa-trash-can"><a class="sit" href="{% url 'desactiver_filiere' filiere.id %}">Desactiver</a></i></td>
+                    {% for filiere in filieres %}
+                    <tr id="filiere-{{filiere.id}}">
+                            <td> {{ filiere.id }} </td>
+                            <td> {{ filiere.departement }} </td>
+                            <td> {{ filiere.nom }} </td>
+                            <td> {{ filiere.total_inscrit }} </td>
+                            
+                            <td> <a href="{% url 'desactiver_filiere' filiere.id %}"><i class="fa-solid fa-trash-can"></i></a>  </td>
+                            
+                            
+
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune filiere enregistrée ...</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
-                </tr>
-            {% endfor %}
             </table>
         </div>
     </div>
+</div>
 </div>
 
 

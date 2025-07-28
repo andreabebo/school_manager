@@ -203,5 +203,22 @@ class Stat(models.Model):
     def __str__(self):
         return f'Stat {self.date_session} du {self.inscrits} au {self.nom_session}'
 
-    
+class Note(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="notes")
+    matiere = models.CharField(max_length=200)
+    coef = models.FloatField(default=1.0)
+    note_cc = models.FloatField("Contrôle Continu", null=True, blank=True)
+    note_sn = models.FloatField("Session Normale", null=True, blank=True)
+    moyenne = models.FloatField("Note finale", null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.note_cc is not None and self.note_sn is not None:
+            self.moyenne = round((self.note_cc + self.note_sn) / 2, 2)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.student.user.get_full_name()} - {self.matiere}"
+
+
+
     

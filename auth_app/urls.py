@@ -32,5 +32,5 @@ urlpatterns = [
     path('desactiver_filiere/<int:filiere_id>', views.desactiver_filiere, name='desactiver_filiere'),
     path('statistiques', views.statistiques, name='statistiques'),
     path('ajout_stat', views.ajout_stat, name='ajout_stat'),
-    
+   
 ]
