@@ -99,6 +99,14 @@
                         <li><a class="dropdown-item" href="{% url 'deconnexion' %}">Deconnexion</a></li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'notifications' %}">
+                      <i class="fa-solid fa-bell"></i>
+                      {% if unread_notifications > 0 %}
+                        <span class="badge bg-danger">{{ unread_notifications }}</span>
+                      {% endif %}
+                    </a>
+                </li>
             </ul>
         </nav>
         <div id="layoutSidenav">
@@ -146,7 +154,33 @@
                                     <a class="nav-link" href="{% url 'creer_emploi_de_temps' %}">Creer un emploi du temps</a>
                                     <a class="nav-link" href="{% url 'afficher_emploi_de_temps' 1 %}">Affichage de l'emploi du temps</a>
                                 </nav>    
-                            </div>  
+                            </div>
+
+                            <!-- Forum Sidebar Section Bootstrap stylisé -->
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseForum" aria-expanded="false" aria-controls="collapseForum">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-comments"></i></div>
+                                <span class="fw-bold">Forum</span>
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseForum" aria-labelledby="headingForum" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav flex-column">
+                                    <a class="nav-link d-flex align-items-center mb-1" href="{% url 'sujet_create' %}">
+                                        <i class="fa-solid fa-plus me-2 text-primary"></i> <span>Créer un sujet</span>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <span class="nav-link disabled text-uppercase text-secondary small mb-1">Sujets par filière</span>
+                                    <!-- Boucle dynamique sur les filières -->
+                                    {% if filieres %}
+                                        {% for filiere in filieres %}
+                                            <a class="nav-link d-flex align-items-center ms-2 mb-1" href="{% url 'sujet_list' filiere.id %}">
+                                                <i class="fa-solid fa-list me-2 text-success"></i> <span>{{ filiere.nom }}</span>
+                                            </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="nav-link text-muted ms-2">Aucune filière</span>
+                                    {% endif %}
+                                </nav>
+                            </div>
                                   
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsThree" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>

@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+from .views import SujetCreateView, SujetListView, SujetDetailView, notifications, marquer_notif_lue
+
 urlpatterns = [
     path('', views.acceuil, name='base'),
     path('connexion/', views.connexion, name='connexion'),
@@ -32,5 +34,13 @@ urlpatterns = [
     path('desactiver_filiere/<int:filiere_id>', views.desactiver_filiere, name='desactiver_filiere'),
     path('statistiques', views.statistiques, name='statistiques'),
     path('ajout_stat', views.ajout_stat, name='ajout_stat'),
+    
+    # Forum de discussion éducatif
+    path('forum/creer/', SujetCreateView.as_view(), name='sujet_create'),
+    path('forum/filiere/<int:filiere_id>/', SujetListView.as_view(), name='sujet_list'),
+    path('forum/sujet/<int:pk>/', SujetDetailView.as_view(), name='sujet_detail'),
+    path('notifications/', notifications, name='notifications'),
+    path('notifications/lue/<int:notif_id>/', marquer_notif_lue, name='marquer_notif_lue'),
+    path('notifications/supprimer/<int:notif_id>/', views.supprimer_notification, name='supprimer_notification'),
    
 ]

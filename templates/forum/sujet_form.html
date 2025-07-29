@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white text-center">
+          <h3 class="mb-0"><i class="fa-solid fa-comments me-2"></i>Créer un sujet de discussion</h3>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_titre" class="form-label fw-semibold">Titre du sujet</label>
+              <input type="text" name="titre" maxlength="200" class="form-control" id="id_titre" value="{{ form.titre.value|default_if_none:'' }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="id_description" class="form-label fw-semibold">Description</label>
+              <textarea name="description" cols="40" rows="6" class="form-control" id="id_description" required>{{ form.description.value|default_if_none:'' }}</textarea>
+            </div>
+            <div class="mb-3">
+              <label for="id_filiere" class="form-label fw-semibold">Filière concernée</label>
+              <select name="filiere" class="form-select" id="id_filiere" required>
+                <option value="">---------</option>
+                {% for filiere in form.fields.filiere.queryset %}
+                  <option value="{{ filiere.pk }}" {% if form.filiere.value|stringformat:'s' == filiere.pk|stringformat:'s' %}selected{% endif %}>{{ filiere.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="id_fichier" class="form-label fw-semibold">Importer un fichier (optionnel)</label>
+              <input type="file" name="fichier" class="form-control" id="id_fichier">
+            </div>
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg" type="submit">
+                <i class="fa-solid fa-paper-plane me-2"></i>Publier le sujet
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

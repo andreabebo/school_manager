@@ -1,6 +1,34 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django import forms
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django import forms
+
+def supprimer_notification(request, notif_id):
+    notif = get_object_or_404(Notification, id=notif_id, user=request.user)
+    notif.delete()
+    return redirect('notifications')
+# ...existing code...
+
+# Forum imports
+from django.views.generic import ListView, DetailView, CreateView
+from django.utils.decorators import method_decorator
+from .models import Sujet, SujetCommentaire, Notification
+from .form import SujetForm, SujetCommentaireForm
+
+
+# Fonctionnalité : supprimer une notification
+@login_required
+def supprimer_notification(request, notif_id):
+    try:
+        if request.user.is_superuser:
+            notif = Notification.objects.get(id=notif_id)
+        else:
+            notif = Notification.objects.get(id=notif_id, user=request.user)
+        notif.delete()
+        messages.success(request, "Notification supprimée.")
+    except Notification.DoesNotExist:
+        messages.error(request, "Notification introuvable ou accès refusé.")
+    return redirect('notifications')
 from django.contrib.auth import login, authenticate, logout
 from auth_app.models import User, Student
 from django.contrib.auth.forms  import UserCreationForm
@@ -9,6 +37,12 @@ from django.contrib import messages
 from .form import CoursForm, EmploiDeTempsForm, CommentaireForm, ActiviteJourForm, NoteForm
 from .models import Cours, Commentaire, EmploiDeTemps, Professeur, PaiementScolarite, Filiere, ActiviteJour, Stat, Session
 from django.contrib import messages
+
+# Forum imports
+from django.views.generic import ListView, DetailView, CreateView
+from django.utils.decorators import method_decorator
+from .models import Sujet, SujetCommentaire, Notification
+from .form import SujetForm, SujetCommentaireForm
 
 
 # Create your views here.
@@ -21,6 +55,92 @@ def inscription(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'inscription.html', {'form': form})            
+
+
+# Forum de discussion éducatif
+@method_decorator(login_required, name='dispatch')
+class SujetCreateView(CreateView):
+    model = Sujet
+    form_class = SujetForm
+    template_name = 'forum/sujet_form.html'
+
+    def form_valid(self, form):
+        from django.contrib import messages
+        from django.shortcuts import redirect, render
+        # Empêcher les étudiants de créer un sujet
+        if Student.objects.filter(user=self.request.user).exists():
+            messages.error(self.request, "Les étudiants ne sont pas autorisés à créer un sujet.")
+            return render(self.request, self.template_name, {'form': form})
+
+        if not form.is_valid():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(self.request, f"{form.fields[field].label if field in form.fields else field} : {error}")
+            return render(self.request, self.template_name, {'form': form})
+
+        sujet = form.save(commit=False)
+        sujet.auteur = self.request.user
+        # Handle file upload if a file is provided
+        if self.request.FILES.get('fichier'):
+            sujet.fichier = self.request.FILES['fichier']
+        sujet.save()
+        self.object = sujet
+        # Notifier tous les étudiants de la filière
+        etudiants = Student.objects.filter(filiere=sujet.filiere)
+        for etu in etudiants:
+            Notification.objects.create(
+                user=etu.user,
+                sujet=sujet,
+                message=f"Nouveau sujet dans {sujet.filiere.nom} : {sujet.titre}"
+            )
+        messages.success(self.request, "Sujet créé avec succès !")
+        return redirect(sujet.get_absolute_url())
+
+@method_decorator(login_required, name='dispatch')
+class SujetListView(ListView):
+    model = Sujet
+    template_name = 'forum/sujet_list.html'
+    context_object_name = 'sujets'
+
+    def get_queryset(self):
+        filiere_id = self.kwargs.get('filiere_id')
+        return Sujet.objects.filter(filiere_id=filiere_id).order_by('-date_creation')
+
+@method_decorator(login_required, name='dispatch')
+class SujetDetailView(DetailView):
+    model = Sujet
+    template_name = 'forum/sujet_detail.html'
+    context_object_name = 'sujet'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SujetCommentaireForm()
+        context['commentaires'] = self.object.commentaires.order_by('date_pub')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = SujetCommentaireForm(request.POST)
+        if form.is_valid():
+            commentaire = form.save(commit=False)
+            commentaire.sujet = self.object
+            commentaire.auteur = request.user
+            commentaire.save()
+            return redirect(self.object.get_absolute_url())
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
+
+@login_required
+def notifications(request):
+    notifs = Notification.objects.all().order_by('-date')
+    return render(request, 'forum/notifications.html', {'notifications': notifs})
+
+@login_required
+def marquer_notif_lue(request, notif_id):
+    notif = get_object_or_404(Notification, id=notif_id, user=request.user)
+    notif.lu = True
+    notif.save()
+    return redirect('notifications')
 
 def connexion(request):
     if request.method == 'POST':
@@ -84,8 +204,9 @@ def ajouterEtudiant(request, session_id):
         contact = request.POST.get('contact') 
         password = request.POST.get('password')
         filiere = Filiere.objects.get(id=filiereId)
-        user=User.objects.create(first_name=prenom, last_name=nom, email=email, password=password)
-        user.save() 
+        user=User(first_name=prenom, last_name=nom, email=email)
+        user.set_password(password)
+        user.save()
         student=Student.objects.create(age=age, ville=ville, diplome=diplome, filiere=filiere, contact=contact, user=user, session=session)
         student.save()
         return redirect('listeEtudiant')

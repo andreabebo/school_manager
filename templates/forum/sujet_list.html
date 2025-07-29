@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Sujets de discussion</h2>
+  <ul class="list-group">
+    {% for sujet in sujets %}
+      <li class="list-group-item d-flex align-items-center justify-content-between">
+        <div>
+          <i class="fa-solid fa-message me-2 text-primary"></i>
+          <a href="{{ sujet.get_absolute_url }}" class="fw-semibold">{{ sujet.titre }}</a>
+          <span class="text-muted small">par {{ sujet.auteur.get_full_name|default:sujet.auteur }} ({{ sujet.date_creation|date:"d/m/Y H:i" }})</span>
+          {% if sujet.fichier %}
+            <br>
+            <a href="{{ sujet.fichier.url }}" class="link-primary small" download>
+              <i class="fa-solid fa-paperclip me-1"></i>Télécharger le fichier
+            </a>
+          {% endif %}
+        </div>
+        <div>
+          <span class="badge bg-secondary">{{ sujet.commentaires.count }} commentaire{{ sujet.commentaires.count|pluralize }}</span>
+        </div>
+      </li>
+    {% empty %}
+      <li class="list-group-item">Aucun sujet pour cette filière.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

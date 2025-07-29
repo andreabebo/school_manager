@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Notifications</h2>
+  <ul class="list-group">
+    {% for notif in notifications %}
+      <li class="list-group-item d-flex align-items-center justify-content-between {% if not notif.lu %}list-group-item-warning border-warning{% endif %}">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-bell me-2 text-primary"></i>
+          <span>{{ notif.message }} <a href="{{ notif.sujet.get_absolute_url }}" class="fw-semibold">Voir le sujet</a></span>
+          {% if not notif.lu %}
+            <span class="badge bg-warning text-dark ms-2">Nouveau</span>
+          {% endif %}
+        </div>
+        <div class="d-flex align-items-center">
+          {% if not notif.lu %}
+            <a href="{% url 'marquer_notif_lue' notif.id %}" class="btn btn-sm btn-outline-primary me-2">Marquer comme lu</a>
+          {% endif %}
+          <a href="{% url 'supprimer_notification' notif.id %}" class="btn btn-sm btn-outline-danger me-2" onclick="return confirm('Supprimer cette notification ?');">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+          <span class="text-muted small">{{ notif.date|date:"d/m/Y H:i" }}</span>
+        </div>
+      </li>
+    {% empty %}
+      <li class="list-group-item">Aucune notification.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

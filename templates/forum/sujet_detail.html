@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>{{ sujet.titre }}</h2>
+  <p>{{ sujet.description }}</p>
+  {% if sujet.fichier %}
+    <div class="mb-3">
+      <a href="{{ sujet.fichier.url }}" class="btn btn-outline-primary" download>
+        <i class="fa-solid fa-paperclip me-1"></i>Télécharger le fichier joint
+      </a>
+    </div>
+  {% endif %}
+  <hr>
+  <h4>Commentaires</h4>
+  <ul class="list-group mb-3">
+    {% for commentaire in commentaires %}
+      <li class="list-group-item">
+        <strong>{{ commentaire.auteur.get_full_name }}</strong> <span class="text-muted">{{ commentaire.date_pub|date:"d/m/Y H:i" }}</span>
+        <p>{{ commentaire.texte }}</p>
+      </li>
+    {% empty %}
+      <li class="list-group-item">Aucun commentaire.</li>
+    {% endfor %}
+  </ul>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success" type="submit">Commenter</button>
+  </form>
+</div>
+{% endblock %}

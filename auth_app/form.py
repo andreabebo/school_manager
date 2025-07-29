@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms  import UserCreationForm
 from .models import Cours, Commentaire, EmploiDeTemps, Professeur, Salle, Matiere, ActiviteJour, Note
 
+# Forum
+from .models import Sujet, SujetCommentaire
+
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
         label="Password",
@@ -77,6 +80,21 @@ class NoteForm(forms.ModelForm):
             "note_cc": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Note contrôle continu"}),
             "note_sn": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Note session normale"}),
         }        
+
+
+# Forum de discussion éducatif
+class SujetForm(forms.ModelForm):
+    class Meta:
+        model = Sujet
+        fields = ['titre', 'description', 'filiere', 'fichier']
+
+class SujetCommentaireForm(forms.ModelForm):
+    class Meta:
+        model = SujetCommentaire
+        fields = ['texte']
+        widgets = {
+            'texte': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 
 

@@ -219,6 +219,42 @@ class Note(models.Model):
     def __str__(self):
         return f"{self.student.user.get_full_name()} - {self.matiere}"
 
+# Forum de discussion éducatif
+from django.urls import reverse
+
+class Sujet(models.Model):
+    titre = models.CharField(max_length=200)
+    description = models.TextField()
+    filiere = models.ForeignKey('Filiere', on_delete=models.CASCADE, related_name='sujets')
+    auteur = models.ForeignKey('User', on_delete=models.CASCADE, related_name='sujets')
+    date_creation = models.DateTimeField(auto_now_add=True)
+    fichier = models.FileField(upload_to='documents/', blank=True, null=True)
+
+    def __str__(self):
+        return self.titre
+
+    def get_absolute_url(self):
+        return reverse('sujet_detail', args=[str(self.id)])
+
+class SujetCommentaire(models.Model):
+    sujet = models.ForeignKey(Sujet, on_delete=models.CASCADE, related_name='commentaires')
+    auteur = models.ForeignKey('User', on_delete=models.CASCADE)
+    texte = models.TextField()
+    date_pub = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.auteur.get_full_name()} - {self.sujet.titre}"
+
+class Notification(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='notifications')
+    sujet = models.ForeignKey(Sujet, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    lu = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notif pour {self.user.email} - {self.sujet.titre}"
+
 
 
     
