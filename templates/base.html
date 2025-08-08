@@ -78,7 +78,7 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" ><img src="/static/images/logo.JPG" alt="" width="100px", border-radius="3px";></a>
+            <a class="navbar-brand ps-3" ><img src="/static/images/school.JPEG" alt="" width="100px", border-radius="3px";></a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -150,7 +150,8 @@
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                     <a class="nav-link" href="{% url 'filiere' %}">Specialite</a>
-                                    <a class="nav-link" href="{% url 'cours' %}">Discussion</a>
+                                    <a class="nav-link" href="{% url 'matiere' %}">Matieres</a>
+                                    <a class="nav-link" href="{% url 'salle' %}">Salles</a>
                                     <a class="nav-link" href="{% url 'creer_emploi_de_temps' %}">Creer un emploi du temps</a>
                                     <a class="nav-link" href="{% url 'afficher_emploi_de_temps' 1 %}">Affichage de l'emploi du temps</a>
                                 </nav>    
@@ -194,24 +195,37 @@
                                     
                                 </nav>
                             </div>      
-                            
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsFour" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Notes
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                        <div class="collapse" id="collapseLayoutsFour" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                
+                                    <a class="nav-link" href="{% url 'student_list' %}">Notes</a>
+                                    <a class="nav-link" href="{% url 'presence_list' %}">Présences</a>
+                                    <a class="nav-link" href="{% url 'attestation_list' %}">Attestations</a>
+                                
+                            </nav>
+                        </div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsFive" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Statistiques
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayoutsFour" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <div class="collapse" id="collapseLayoutsFive" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url 'ajout_stat' %}">Enregistrer</a>
-                                    <a class="nav-link" href="{% url 'statistiques' %}">Consulter</a>
-                                    
+                                    <a class="nav-link" href="{% url 'afficher_statistiques' %}">
+                                        <i class="bi bi-bar-chart"></i> Statistiques
+                                    </a>
                                 </nav>
                             </div>   
                             
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">CFPTAC</div>
+                        <div class="small">SCHOOL</div>
                         
                     </div>
                 </nav>
@@ -234,9 +248,8 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="/static/js/datatables-simple-demo.js"></script>
         
-        {% block js %}
-
-
-        {% endblock js %}
+        {% block extra_js %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        {% endblock extra_js %}
     </body>
 

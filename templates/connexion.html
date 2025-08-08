@@ -4,159 +4,565 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="/static/css/fontawesome/css/all.css" referrerpolicy="no-referrer" />
-    <link href="/static/css/styles.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>ABSCHOOL - Plateforme Éducative</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --admin: #8e44ad;
+            --student: #3498db;
+            --teacher: #2ecc71;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
 
-  <style>
-    :root {
-      --bg-light: #f8f9fa;
-      --bg-dark: #343a40;
-      --text-light: #212529;
-      --text-dark: #f8f9fa;
-      --card-light: #fff;
-      --card-dark: #495057;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
 
-    body.light-mode {
-      background-color: var(--bg-light);
-      color: var(--text-light);
-    }
+        .platform-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    body.dark-mode {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-    }
+        .app-header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s;
+        }
 
-    .login-box {
-      max-width: 400px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 8px;
-      background-color: var(--card-light);
-      color: inherit;
-      width: 100%;
-    }
+        .app-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
 
-    @media (max-width: 576px) {
-      .login-box {
-        padding: 15px;
-        max-width: 100%;
-      }
-    }
+        .app-tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    body.dark-mode .login-box {
-      background-color: var(--card-dark);
-    }
+        .platform-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 20, 80, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
 
-    .toggle-switch {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-    }
-    body{
-        background-image: url("{% static 'images/ecranConnexion.jpeg' %}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-  </style>
+        .card-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs {
+            border: none;
+            gap: 10px;
+        }
+
+        .nav-tabs .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .tab-content {
+            padding: 30px;
+        }
+
+        /* Style pour les formulaires */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-group-text {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards de fonctionnalités */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .feature-desc {
+            opacity: 0.8;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Compte sélecteur */
+        .account-selector {
+            max-width: 400px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        .account-selector select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .account-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+
+        .account-form {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .account-form.active {
+            display: block;
+        }
+
+        #admin-form { border-left: 4px solid var(--admin); }
+        #student-form { border-left: 4px solid var(--student); }
+        #teacher-form { border-left: 4px solid var(--teacher); }
+
+        /* Onglet Détails */
+        .app-features {
+            padding: 20px;
+        }
+
+        .app-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        .toggle-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-logo {
+                font-size: 2.5rem;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .tab-content {
+                padding: 20px 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-<body class="light-mode" >
-
-  <!-- Bouton mode sombre / clair -->
-  <div class="toggle-switch">
-    <button class="btn btn-sm btn-secondary" onclick="toggleMode()">🌙 / ☀️</button>
-  </div>
-
-  <div class="container min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="row w-100 justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
-        <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
-        <div class="login-box shadow">
-          <h4 class="text-center mb-4">Connexion</h4>
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fa-solid fa-circle-exclamation me-2"></i>{{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          {% endif %}
-          <form id="loginForm" method="post" action="{% url 'connexion' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="email" class="form-label">Adresse e-mail</label>
-              <input type="text" class="form-control" id="email" placeholder="Entrez nom d'utilisateur" name="username" required value="{{ username|default:'' }}" />
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Mot de passe</label>
-              <div class="input-group">
-                <input type="password" class="form-control" id="password" placeholder="Mot de passe" name="password" required />
-                <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn" onclick="togglePassword()">
-                  <i id="togglePasswordIcon" class="fa-solid fa-eye-slash"></i>
-                </button>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-          </form>
-        </div>
-      </div>
+<body class="light-mode">
+    <!-- Bouton mode sombre / clair -->
+    <div class="toggle-switch">
+        <button class="btn btn-sm btn-light" onclick="toggleMode()">🌙 / ☀️</button>
     </div>
+
+    <div class="platform-container">
+        <header class="app-header">
+            <div class="app-logo">ABSCHOOL</div>
+            <div class="app-tagline">La plateforme éducative innovante pour une gestion scolaire simplifiée</div>
+        </header>
+
+        <div class="platform-card">
+            <div class="card-header">
+                <ul class="nav nav-tabs" id="platformTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" 
+                                data-bs-target="#home" type="button" role="tab">Accueil</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="account-tab" data-bs-toggle="tab" 
+                                data-bs-target="#account" type="button" role="tab">Compte</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="features-tab" data-bs-toggle="tab" 
+                                data-bs-target="#features" type="button" role="tab">Détails</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="platformTabContent">
+                <!-- Onglet Accueil -->
+                <div class="tab-pane fade show active" id="home" role="tabpanel">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-8 col-lg-6">
+                            <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+                            <div class="login-box">
+                                <h4 class="text-center mb-4">Connexion à ABSCHOOL</h4>
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i class="fa-solid fa-circle-exclamation me-2"></i>{{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <form id="loginForm" method="post" action="{% url 'connexion' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Adresse e-mail</label>
+                                        <input type="text" class="form-control" id="email" placeholder="Entrez nom d'utilisateur" 
+                                               name="username" required value="{{ username|default:'' }}" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password" placeholder="Mot de passe" 
+                                                   name="password" required />
+                                            <button class="btn btn-outline-light" type="button" id="togglePasswordBtn" onclick="togglePassword()">
+                                                <i id="togglePasswordIcon" class="fa-solid fa-eye-slash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-3">Se connecter</button>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet Compte -->
+                
+
+                <!-- Onglet Détails - Fonctionnalités -->
+                <div class="tab-pane fade" id="features" role="tabpanel">
+                  <div class="app-features">
+                      <h3 class="text-center mb-4">Fonctionnalités d'ABSCHOOL</h3>
+                      <p class="app-description">
+                          ABSCHOOL est une plateforme éducative complète qui simplifie la gestion scolaire 
+                          pour tous les acteurs du système éducatif. Notre solution innovante offre un ensemble 
+                          d'outils puissants pour améliorer l'expérience d'apprentissage et optimiser 
+                          l'administration scolaire.
+                      </p>
+                      
+                      <div class="features-grid">
+                          <div class="feature-card fade-in delay-1">
+                              <div class="feature-icon">
+                                  <i class="fas fa-user-graduate"></i>
+                              </div>
+                              <h4 class="feature-title">Gestion des Étudiants</h4>
+                              <p class="feature-desc">Suivi complet des dossiers étudiants, inscriptions, notes et parcours académiques. Visualisez les progrès et identifiez les besoins spécifiques.</p>
+                          </div>
+                          
+                          <div class="feature-card fade-in delay-2">
+                              <div class="feature-icon">
+                                  <i class="fas fa-chalkboard-teacher"></i>
+                              </div>
+                              <h4 class="feature-title">Espace Professeurs</h4>
+                              <p class="feature-desc">Outils pour gérer les cours, saisir les notes, créer des évaluations et communiquer efficacement avec les étudiants et les parents.</p>
+                          </div>
+                          
+                          <div class="feature-card fade-in delay-3">
+                              <div class="feature-icon">
+                                  <i class="fas fa-book"></i>
+                              </div>
+                              <h4 class="feature-title">Cours en Ligne</h4>
+                              <p class="feature-desc">Plateforme d'apprentissage avec ressources pédagogiques, exercices interactifs et suivi des progrès en temps réel.</p>
+                          </div>
+                          
+                          <div class="feature-card fade-in delay-1">
+                              <div class="feature-icon">
+                                  <i class="fas fa-clipboard-list"></i>
+                              </div>
+                              <h4 class="feature-title">Évaluation & Notes</h4>
+                              <p class="feature-desc">Système complet de gestion des notes, bulletins scolaires et relevés de performance avec analyses statistiques avancées.</p>
+                          </div>
+                          
+                          <div class="feature-card fade-in delay-2">
+                              <div class="feature-icon">
+                                  <i class="fas fa-calendar-alt"></i>
+                              </div>
+                              <h4 class="feature-title">Emploi du Temps</h4>
+                              <p class="feature-desc">Planification intelligente des cours, gestion des salles de classe et des ressources avec notifications automatiques.</p>
+                          </div>
+                          
+                          <div class="feature-card fade-in delay-3">
+                              <div class="feature-icon">
+                                  <i class="fas fa-comments"></i>
+                              </div>
+                              <h4 class="feature-title">Communication</h4>
+                              <p class="feature-desc">Messagerie intégrée et annonces pour faciliter les échanges entre tous les membres de la communauté éducative.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="text-center mt-5">
+                          <button class="btn btn-outline-light btn-lg">Découvrir plus de fonctionnalités</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+      <footer class="app-footer">
+          <p>© 2025 ABSCHOOL - Plateforme Éducative. Tous droits réservés.</p>
+          <p>Développé avec passion pour l'éducation de demain</p>
+      </footer>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- Bootstrap 5 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6DQD5NnQ64u9ZZg3QEO2B9j7l9v6p5a5F49z5q4v7B6+" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Fix fermeture alert Bootstrap si JS natif ne fonctionne pas
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.alert .btn-close').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var alert = btn.closest('.alert');
-          if(alert) alert.classList.remove('show');
-          setTimeout(function(){ if(alert) alert.remove(); }, 300);
-        });
+      // Initialisation
+      document.addEventListener('DOMContentLoaded', function() {
+          // Masquer tous les formulaires de compte au démarrage
+          document.querySelectorAll('.account-form').forEach(form => {
+              form.style.display = 'none';
+          });
+          
+          // Activer les animations
+          setTimeout(function() {
+              document.querySelectorAll('.fade-in').forEach(el => {
+                  el.style.opacity = 1;
+              });
+          }, 500);
       });
-    });
-  </script>
 
-  <script>
-    // Bascule entre les modes clair et sombre
-    function toggleMode() {
-      const body = document.body;
-      body.classList.toggle("light-mode");
-      body.classList.toggle("dark-mode");
-    }
-
-    // Afficher / masquer le mot de passe
-    function togglePassword() {
-      const passwordInput = document.getElementById("password");
-      const icon = document.getElementById("togglePasswordIcon");
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        icon.classList.add("fa-eye");
-        icon.classList.remove("fa-eye-slash");
-      } else {
-        passwordInput.type = "password";
-        icon.classList.add("fa-eye-slash");
-        icon.classList.remove("fa-eye");
+      // Bascule entre les modes clair et sombre
+      function toggleMode() {
+          const body = document.body;
+          body.classList.toggle("light-mode");
+          body.classList.toggle("dark-mode");
       }
-    }
 
-    
-
-      // Ici tu peux ajouter une vérification (ex : appel API, validation, etc.)
-
-      // Simuler une connexion réussie
+      // Afficher / masquer le mot de passe
+      function togglePassword() {
+          const passwordInput = document.getElementById("password");
+          const icon = document.getElementById("togglePasswordIcon");
+          if (passwordInput.type === "password") {
+              passwordInput.type = "text";
+              icon.classList.add("fa-eye");
+              icon.classList.remove("fa-eye-slash");
+          } else {
+              passwordInput.type = "password";
+              icon.classList.add("fa-eye-slash");
+              icon.classList.remove("fa-eye");
+          }
+      }
       
+      // Gestion du sélecteur de type de compte
+      document.getElementById('accountType').addEventListener('change', function() {
+          // Masquer tous les formulaires
+          document.querySelectorAll('.account-form').forEach(form => {
+              form.style.display = 'none';
+          });
+          
+          // Afficher le formulaire sélectionné
+          const selectedForm = this.value + '-form';
+          if (selectedForm && document.getElementById(selectedForm)) {
+              document.getElementById(selectedForm).style.display = 'block';
+          }
+      });
+      
+      // Simulation de connexion
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          
+          if (!email || !password) {
+              document.getElementById('errorAlert').classList.remove('d-none');
+              document.getElementById('errorAlert').textContent = 'Veuillez remplir tous les champs';
+              return;
+          }
+          
+          // Simulation de connexion réussie
+          document.getElementById('errorAlert').classList.add('d-none');
+          alert('Connexion réussie! Redirection en cours...');
+      });
   </script>
 </body>
 </html>

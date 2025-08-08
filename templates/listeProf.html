@@ -1,106 +1,332 @@
 {% extends "base.html" %}
-
-
-{% block title %}LISTE DES ETUDIANTS{% endblock title %}
+{% block title %}LISTE DES FORMATEURS{% endblock title %}
 {% block css %}
-    <style>
-        .icon-container{
-            text-align: right;
-            margin-top: 10px;
-        }
-        .fa-plus{
-            font-size: 2em;
-        }
-        .custom-link{
-            font-size: 24px;
-            background-color: white;
-            margin-right: 50px;
-            text-decoration: none;
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        color: #333;
+        padding: 20px;
+    }
+
+    .container-main {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        letter-spacing: 0.5px;
+    }
+
+    .add-btn-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 25px;
+    }
+
+    .add-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+        text-decoration: none;
+    }
+
+    .add-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(46, 204, 113, 0.4);
+    }
+
+    .add-btn i {
+        margin-right: 10px;
+        font-size: 1.4rem;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        margin-bottom: 40px;
+        border: none;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        font-size: 1.4rem;
+        font-weight: 600;
+        padding: 20px 25px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .card-header i {
+        margin-right: 12px;
+        font-size: 1.6rem;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        padding: 15px;
+    }
+
+    #datatablesSimple {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    #datatablesSimple thead {
+        background: linear-gradient(135deg, #4a7bff 0%, #2a5298 100%);
+        color: white;
+    }
+
+    #datatablesSimple th {
+        padding: 18px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: left;
+        border-bottom: 2px solid #1e3c72;
+    }
+
+    #datatablesSimple tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    #datatablesSimple tbody tr:nth-child(even) {
+        background-color: #f8fbff;
+    }
+
+    #datatablesSimple tbody tr:hover {
+        background-color: #eef4ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(30, 60, 114, 0.1);
+    }
+
+    #datatablesSimple td {
+        padding: 16px 20px;
+        font-size: 1.05rem;
+        color: #2a3f5f;
+        border-bottom: 1px solid #e0e7ff;
+    }
+
+    .action-cell {
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin: 0 5px;
+    }
+
+    .delete-btn {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+
+    .edit-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .empty-row td {
+        text-align: center;
+        padding: 30px;
+        font-size: 1.2rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    @media (max-width: 992px) {
+        .page-title {
+            font-size: 2.2rem;
         }
         
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-    </style>
+        .card-header {
+            font-size: 1.2rem;
+            padding: 15px 20px;
+        }
+        
+        #datatablesSimple th,
+        #datatablesSimple td {
+            padding: 14px 16px;
+            font-size: 0.95rem;
+        }
+        
+        .add-btn {
+            padding: 12px 22px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .add-btn-container {
+            margin-bottom: 15px;
+        }
+        
+        .action-cell {
+            min-width: 100px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            margin: 0 3px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding: 15px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+        }
+        
+        .table-container {
+            padding: 10px;
+        }
+        
+        #datatablesSimple th,
+        #datatablesSimple td {
+            padding: 12px 14px;
+            font-size: 0.9rem;
+        }
+        
+        .empty-row td {
+            padding: 20px;
+            font-size: 1rem;
+        }
+    }
+</style>
 {% endblock css %}
 {% block content %}
 
-<div class="icon-container">
-    <a class="custom-link" href="/professeur" ><i class="fa-solid fa-plus"></i>Ajouter un formateur</a>
-</div>
-
+<div class="container-main">
+    <div class="header-section">
+        <h1 class="page-title">LISTE DES FORMATEURS</h1>
+        
+        <div class="add-btn-container">
+            <a href="/professeur" class="add-btn">
+                <i class="fa-solid fa-plus"></i> Ajouter un formateur
+            </a>
+        </div>
+    </div>
   
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Tables</h1>
-    
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
-            LISTE DES FORMATEURS
+            FORMATEURS ENREGISTRÉS
         </div>
         <div class="card-body">
-            <table id="datatablesSimple">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Prénoms</th>
-                        <th>Noms</th>
-                        <th>Email</th>
-                        <th>Age/date</th>
-                        <th>Specialite</th>
-                        <th>Numero de telephone</th>
-                        <th>Action</th>
-                        <th>Action</th>
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for professeur in professeurs %}
+            <div class="table-container">
+                <table id="datatablesSimple">
+                    <thead>
                         <tr>
-                            <td> {{ professeur.id }} </td>
-                            <td> {{ professeur.user.first_name }} </td>
-                            <td> {{ professeur.user.last_name }} </td>
-                            <td> {{ professeur.user.email }} </td>
-                            <td> {{ professeur.age }} </td>
-                            <td> {{ professeur.specialite }} </td>
-                            <td> {{ professeur.numero }} </td>
-                            <td> <a href="{% url 'desactiver_professeur' professeur.user.id  %}"><i class="fa-solid fa-trash-can"></i></a>  </td>
-                            <td> <a href="{% url 'edit_prof' professeur.user.id %}"><i class="fa-solid fa-pen-to-square"></i></a>  </td>
-                            
-
+                            <th>ID</th>
+                            <th>Prénoms</th>
+                            <th>Noms</th>
+                            <th>Email</th>
+                            <th>Date de naissance</th>
+                            <th>Sexe</th>
+                            <th>Téléphone</th>
+                            <th class="action-cell">Actions</th>
                         </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6">Aucun formateur enregistré ...</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for professeur in professeurs %}
+                            <tr>
+                                <td> {{ professeur.id }} </td>
+                                <td> {{ professeur.user.first_name }} </td>
+                                <td> {{ professeur.user.last_name }} </td>
+                                <td> {{ professeur.user.email }} </td>
+                                <td> {{ professeur.age }} </td>
+                                <td> 
+                                    {% if professeur.sexe == 'M' %}
+                                        <i class="fa-solid fa-mars" style="color: #3498db;"></i> Masculin
+                                    {% else %}
+                                        <i class="fa-solid fa-venus" style="color: #e74c3c;"></i> Féminin
+                                    {% endif %}
+                                </td>
+                                <td> {{ professeur.numero }} </td>
+                                <td class="action-cell">
+                                    <a href="{% url 'edit_prof' professeur.user.id %}" class="action-btn edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="{% url 'desactiver_professeur' professeur.user.id %}" class="action-btn delete-btn">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="empty-row">Aucun formateur enregistré</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

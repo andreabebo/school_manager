@@ -1,0 +1,723 @@
+{% extends "base.html" %}
+{% block title %}Notes de {{ student.user.get_full_name }}{% endblock %}
+{% block css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        color: #fff;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Header card */
+    .student-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        padding: 25px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .student-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .student-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .student-avatar {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: bold;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .student-details h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #2a5298;
+        margin-bottom: 5px;
+    }
+
+    .student-details p {
+        color: #5a6d8c;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .print-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        text-decoration: none;
+    }
+
+    .print-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+    }
+
+    .print-btn i {
+        margin-right: 8px;
+    }
+
+    /* Grades card */
+    .grades-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .add-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        text-decoration: none;
+    }
+
+    .add-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+    }
+
+    .add-btn i {
+        margin-right: 8px;
+    }
+
+    .average-badge {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    /* Table styles */
+    .table-container {
+        overflow-x: auto;
+        padding: 20px;
+    }
+
+    .grades-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .grades-table thead {
+        background: linear-gradient(135deg, #4a7bff 0%, #2a5298 100%);
+        color: white;
+    }
+
+    .grades-table th {
+        padding: 18px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: left;
+    }
+
+    .grades-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .grades-table tbody tr:nth-child(even) {
+        background-color: #f8fbff;
+    }
+
+    .grades-table tbody tr:hover {
+        background-color: #eef4ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(30, 60, 114, 0.1);
+    }
+
+    .grades-table td {
+        padding: 16px 20px;
+        font-size: 1.05rem;
+        color: #2a3f5f;
+        border-bottom: 1px solid #e0e7ff;
+    }
+
+    .subject-cell {
+        font-weight: 600;
+    }
+
+    .subject-coeff {
+        font-size: 0.9rem;
+        color: #5a6d8c;
+        margin-top: 5px;
+    }
+
+    .grade-cell {
+        font-weight: 700;
+    }
+
+    .grade-pass {
+        color: #27ae60;
+    }
+
+    .grade-fail {
+        color: #e74c3c;
+    }
+
+    .mention-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .mention-excellent {
+        background: rgba(39, 174, 96, 0.15);
+        color: #27ae60;
+    }
+
+    .mention-tres-bien {
+        background: rgba(52, 152, 219, 0.15);
+        color: #3498db;
+    }
+
+    .mention-bien {
+        background: rgba(41, 128, 185, 0.15);
+        color: #2980b9;
+    }
+
+    .mention-assez-bien {
+        background: rgba(127, 140, 141, 0.15);
+        color: #7f8c8d;
+    }
+
+    .mention-passable {
+        background: rgba(241, 196, 15, 0.15);
+        color: #f1c40f;
+    }
+
+    .mention-insuffisant {
+        background: rgba(231, 76, 60, 0.15);
+        color: #e74c3c;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .edit-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+    .delete-btn {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-size: 1.8rem;
+        color: #2a3f5f;
+        margin-bottom: 10px;
+    }
+
+    .empty-text {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    /* Statistics cards */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-icon {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+    }
+
+    .stat-icon.subjects {
+        color: #3498db;
+    }
+
+    .stat-icon.passed {
+        color: #2ecc71;
+    }
+
+    .stat-icon.failed {
+        color: #e74c3c;
+    }
+
+    .stat-icon.final {
+        color: #9b59b6;
+    }
+
+    .stat-title {
+        font-size: 1.4rem;
+        color: #2a5298;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    .stat-value.passed {
+        color: #27ae60;
+    }
+
+    .stat-value.failed {
+        color: #e74c3c;
+    }
+
+    .stat-mention {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    .mention-excellent-final {
+        color: #27ae60;
+    }
+
+    .mention-tres-bien-final {
+        color: #3498db;
+    }
+
+    .mention-bien-final {
+        color: #2980b9;
+    }
+
+    .mention-assez-bien-final {
+        color: #7f8c8d;
+    }
+
+    .mention-passable-final {
+        color: #f1c40f;
+    }
+
+    .mention-insuffisant-final {
+        color: #e74c3c;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .student-avatar {
+            width: 75px;
+            height: 75px;
+            font-size: 28px;
+        }
+        
+        .student-details h2 {
+            font-size: 1.8rem;
+        }
+        
+        .print-btn, .add-btn {
+            padding: 10px 18px;
+            font-size: 1rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .average-badge {
+            font-size: 1rem;
+            padding: 8px 15px;
+        }
+        
+        .stat-card {
+            padding: 25px;
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+        }
+        
+        .stat-mention {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .student-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .header-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .grades-table th, .grades-table td {
+            padding: 14px 16px;
+            font-size: 0.95rem;
+        }
+        
+        .subject-cell {
+            min-width: 200px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 34px;
+            height: 34px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding: 15px;
+        }
+        
+        .student-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .student-avatar {
+            width: 65px;
+            height: 65px;
+            font-size: 24px;
+        }
+        
+        .student-details h2 {
+            font-size: 1.6rem;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .empty-title {
+            font-size: 1.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+        }
+        
+        .stat-mention {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock css %}
+{% block content %}
+
+<div class="container">
+    <!-- Student Header Card -->
+    <div class="student-card">
+        <div class="student-header">
+            <div class="student-info">
+                <div class="student-avatar">
+                    {{ student.full_name|slice:":1" }}
+                </div>
+                <div class="student-details">
+                    <h2>{{ student.user.get_full_name }}</h2>
+                    <p>{{ student.filiere.nom }} | {{ student.matricule }}</p>
+                </div>
+            </div>
+            
+            <a href="{% url 'generate_pdf' student.id %}" class="print-btn">
+                <i class="fa-solid fa-print"></i> Imprimer PDF
+            </a>
+        </div>
+    </div>
+    
+    <!-- Grades Card -->
+    <div class="grades-card">
+        <div class="card-header">
+            <h2>Détail des Notes</h2>
+            <div class="header-actions">
+                <a href="{% url 'note_create' student.id %}" class="add-btn">
+                    <i class="fa-solid fa-plus"></i> Ajouter une note
+                </a>
+                <div class="average-badge">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Moyenne Générale: 
+                    <span class="fw-bold">
+                        {% if overall_average %}{{ overall_average|floatformat:2 }}{% else %}N/A{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            {% if notes %}
+            <div class="table-container">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Matière</th>
+                            <th>CC (30%)</th>
+                            <th>SN (70%)</th>
+                            <th>Moyenne</th>
+                            <th>Mention</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for note in notes %}
+                        <tr>
+                            <td class="subject-cell">
+                                {{ note.matiere.nom }}
+                                <div class="subject-coeff">Coefficient: {{ note.matiere.coefficient }}</div>
+                            </td>
+                            <td>
+                                <span class="grade-cell {% if note.note_cc >= 10 %}grade-pass{% else %}grade-fail{% endif %}">
+                                    {{ note.note_cc|default:"-" }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="grade-cell {% if note.note_sn >= 10 %}grade-pass{% else %}grade-fail{% endif %}">
+                                    {{ note.note_sn|default:"-" }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="grade-cell {% if note.moyenne >= 10 %}grade-pass{% else %}grade-fail{% endif %}">
+                                    {{ note.moyenne|default:"-" }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="mention-badge 
+                                    {% if note.mention == 'Excellent' %}mention-excellent
+                                    {% elif note.mention == 'Très bien' %}mention-tres-bien
+                                    {% elif note.mention == 'Bien' %}mention-bien
+                                    {% elif note.mention == 'Assez bien' %}mention-assez-bien
+                                    {% elif note.mention == 'Passable' %}mention-passable
+                                    {% else %}mention-insuffisant
+                                    {% endif %}">
+                                    {{ note.mention|default:"-" }}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <a href="{% url 'note_update' note.id %}" class="action-btn edit-btn">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <a href="{% url 'note_delete' note.id %}" class="action-btn delete-btn">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-file-circle-exclamation"></i>
+                </div>
+                <h3 class="empty-title">Aucune note enregistrée</h3>
+                <p class="empty-text">Cet étudiant n'a encore aucune note dans le système</p>
+                <a href="{% url 'note_create' student.id %}" class="add-btn">
+                    <i class="fa-solid fa-plus"></i> Ajouter une note
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon subjects">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <h3 class="stat-title">Matières</h3>
+            <div class="stat-value">{{ notes|length }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon passed">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="stat-title">Matières Validées</h3>
+            <div class="stat-value passed">{{ passed_count }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon failed">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <h3 class="stat-title">Matières Échouées</h3>
+            <div class="stat-value failed">{{ failed_count }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon final">
+                <i class="fa-solid fa-medal"></i>
+            </div>
+            <h3 class="stat-title">Mention Finale</h3>
+            <div class="stat-mention 
+                {% if overall_mention == 'Excellent' %}mention-excellent-final
+                {% elif overall_mention == 'Très bien' %}mention-tres-bien-final
+                {% elif overall_mention == 'Bien' %}mention-bien-final
+                {% elif overall_mention == 'Assez bien' %}mention-assez-bien-final
+                {% elif overall_mention == 'Passable' %}mention-passable-final
+                {% else %}mention-insuffisant-final
+                {% endif %}">
+                {{ overall_mention|default:"N/A" }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

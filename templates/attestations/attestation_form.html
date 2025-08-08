@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        {% if object %}Modifier{% else %}Créer{% endif %} une Attestation
+    </h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.student.label_tag }}
+                {{ form.student }}
+                <div class="text-danger">{{ form.student.errors }}</div>
+            </div>
+            <div class="col-md-6">
+                {{ form.filiere.label_tag }}
+                {{ form.filiere }}
+                <div class="text-danger">{{ form.filiere.errors }}</div>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.type_attestation.label_tag }}
+                {{ form.type_attestation }}
+                <div class="text-danger">{{ form.type_attestation.errors }}</div>
+            </div>
+            <div class="col-md-6">
+                {{ form.valide_jusqua.label_tag }}
+                {{ form.valide_jusqua }}
+                <div class="text-danger">{{ form.valide_jusqua.errors }}</div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            {{ form.texte_personnalise.label_tag }}
+            {{ form.texte_personnalise }}
+            <div class="text-danger">{{ form.texte_personnalise.errors }}</div>
+        </div>
+        
+        <div class="mb-3">
+            {{ form.fichier_pdf.label_tag }}
+            {{ form.fichier_pdf }}
+            <div class="form-text">Format PDF uniquement</div>
+            <div class="text-danger">{{ form.fichier_pdf.errors }}</div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Enregistrer
+            </button>
+            <a href="{% url 'attestation_list' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Annuler
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mise à jour dynamique des filières en fonction de l'étudiant sélectionné
+    const studentSelect = document.getElementById('id_student');
+    const filiereSelect = document.getElementById('id_filiere');
+    
+    studentSelect.addEventListener('change', function() {
+        const studentId = this.value;
+        if (studentId) {
+            // Requête AJAX pour récupérer la filière de l'étudiant
+            fetch(`/api/get_student_filiere/${studentId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.filiere_id) {
+                        filiereSelect.value = data.filiere_id;
+                    }
+                });
+        } else {
+            filiereSelect.value = '';
+        }
+    });
+});
+</script>
+{% endblock %}

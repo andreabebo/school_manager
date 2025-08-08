@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer Activité - {{ activite.titre }}{% endblock %}
+
+{% block css %}
+<style>
+    .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Confirmation de suppression</h3>
+    <p>Voulez-vous vraiment supprimer cette activité et son emploi du temps associé ?</p>
+
+    <ul>
+        <li><strong>Activité :</strong> {{ activite.titre }} ({{ activite.heure_debut }} - {{ activite.heure_fin }})</li>
+        <li><strong>Date :</strong> {{ emploi.date }}</li>
+        <li><strong>Filière :</strong> {{ emploi.filiere.nom }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <a href="{% url 'afficher_emploi_de_temps' emploi.id %}" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // Script pour la confirmation de suppression
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette activité et son emploi du temps associé ?");
+        if (!confirmation) {
+            event.preventDefault();
+        }
+    });
+</script>

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Détails de la Liste de Présence</h2>
+    
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'presence_print' object.pk %}" class="btn btn-success me-2" target="_blank">
+            <i class="bi bi-printer"></i> Imprimer
+        </a>
+        <a href="{% url 'presence_edit' object.pk %}" class="btn btn-warning me-2">
+            <i class="bi bi-pencil"></i> Modifier
+        </a>
+        <a href="{% url 'presence_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Information du cours
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Date:</dt>
+                <dd class="col-sm-9">{{ liste.date_cours|date:"d/m/Y" }}</dd>
+                
+                <dt class="col-sm-3">Filière:</dt>
+                <dd class="col-sm-9">{{ liste.filiere.nom }}</dd>
+                
+                <dt class="col-sm-3">Matière:</dt>
+                <dd class="col-sm-9">{{ liste.matiere.nom }}</dd>
+                
+                <dt class="col-sm-3">Professeur:</dt>
+                <dd class="col-sm-9">{{ liste.professeur.user.get_full_name }}</dd>
+                
+                <dt class="col-sm-3">Heure:</dt>
+                <dd class="col-sm-9">
+                    {{ liste.heure_debut|time:"H:i" }} - {{ liste.heure_fin|time:"H:i" }}
+                </dd>
+                
+                <dt class="col-sm-3">Commentaire:</dt>
+                <dd class="col-sm-9">{{ liste.commentaire|default:"Aucun" }}</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Présences des étudiants
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Présence</th>
+                            <th>Justification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for presence in liste.presences.all %}
+                        <tr>
+                            <td>{{ presence.student.user.get_full_name }}</td>
+                            <td>
+                                {% if presence.est_present %}
+                                <span class="badge bg-success">Présent</span>
+                                {% else %}
+                                <span class="badge bg-danger">Absent</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ presence.justification|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

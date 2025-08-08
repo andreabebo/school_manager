@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-4hy*kpk)38@$kx8v0=l=)f#yr)e)obg2=uynzpk2+*2v!29qht
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "auth_app.User"
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auth_app',
+    'django.contrib.humanize',
     #'widget_tweaks',
 ]
 
@@ -86,9 +87,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django',
         'USER': 'root',
-        'PASSWORD': 'Andy_Blue22',
+        'PASSWORD': '',
         'HOST': '127.0.0.1' ,
-        'PORT': '3308' ,
+        'PORT': '3306' ,
     }
     ,
     #'slqite3':{

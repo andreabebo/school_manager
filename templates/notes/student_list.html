@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+{% block title %}Étudiants par Filière{% endblock %}
+{% block css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        color: #fff;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .filter-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .filter-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .filter-header h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #2a5298;
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .filter-header h2::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        border-radius: 2px;
+    }
+
+    .filter-form {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .filter-group {
+        flex: 1;
+    }
+
+    .filter-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #2a5298;
+        font-size: 1.1rem;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4a7bff;
+        font-size: 1.3rem;
+        z-index: 1;
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 16px 20px 16px 50px;
+        border: 2px solid #e0e7ff;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background-color: #f8fbff;
+        color: #2a3f5f;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        height: 56px;
+        appearance: none;
+        position: relative;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: #4a7bff;
+        box-shadow: 0 0 0 4px rgba(74, 123, 255, 0.15);
+        background-color: white;
+    }
+
+    .filter-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 36px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        height: 56px;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+    }
+
+    .filter-btn i {
+        margin-right: 10px;
+    }
+
+    .filter-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .filter-btn:hover::after {
+        left: 100%;
+    }
+
+    /* Students Card */
+    .students-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 20px 25px;
+    }
+
+    .card-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    /* Table styles */
+    .table-container {
+        overflow-x: auto;
+        padding: 20px;
+    }
+
+    .students-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .students-table thead {
+        background: linear-gradient(135deg, #4a7bff 0%, #2a5298 100%);
+        color: white;
+    }
+
+    .students-table th {
+        padding: 18px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: left;
+    }
+
+    .students-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .students-table tbody tr:nth-child(even) {
+        background-color: #f8fbff;
+    }
+
+    .students-table tbody tr:hover {
+        background-color: #eef4ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(30, 60, 114, 0.1);
+    }
+
+    .students-table td {
+        padding: 16px 20px;
+        font-size: 1.05rem;
+        color: #2a3f5f;
+        border-bottom: 1px solid #e0e7ff;
+    }
+
+    .student-cell {
+        display: flex;
+        align-items: center;
+    }
+
+    .student-avatar {
+        width: 46px;
+        height: 46px;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #2a5298;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .view-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+    .edit-btn {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn i {
+        margin-right: 6px;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-size: 1.8rem;
+        color: #2a3f5f;
+        margin-bottom: 10px;
+    }
+
+    .empty-text {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .filter-header h2 {
+            font-size: 2rem;
+        }
+        
+        .filter-select, .filter-btn {
+            padding: 14px 18px 14px 50px;
+            font-size: 1rem;
+            height: 52px;
+        }
+        
+        .students-table th, .students-table td {
+            padding: 14px 16px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .filter-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding: 15px;
+        }
+        
+        .filter-card, .students-card {
+            padding: 20px 15px;
+        }
+        
+        .filter-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .empty-title {
+            font-size: 1.5rem;
+        }
+        
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock css %}
+{% block content %}
+
+<div class="container">
+    <!-- Filter Card -->
+    <div class="filter-card">
+        <div class="filter-header">
+            <h2>Filtrage par Filière</h2>
+        </div>
+        
+        <form method="get" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Sélectionnez une filière</label>
+                    <div class="select-wrapper">
+                        
+                        <select name="filiere" id="filiere" class="filter-select" onchange="this.form.submit()">
+                            <option value="">Toutes les filières</option>
+                            {% for filiere in filieres %}
+                            <option value="{{ filiere.id }}" {% if request.GET.filiere == filiere.id|stringformat:"i" %}selected{% endif %}>
+                                {{ filiere.nom }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">&nbsp;</label>
+                    <button type="submit" class="filter-btn">
+                        <i class="fa-solid fa-filter"></i> Filtrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Students Card -->
+    <div class="students-card">
+        <div class="card-header">
+            <h2>Liste des Étudiants</h2>
+        </div>
+        
+        <div class="card-body">
+            {% if students %}
+            <div class="table-container">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Étudiant</th>
+                            <th>Filière</th>
+                            <th>Matricule</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar">
+                                        {{ student.user.get_full_name|slice:":1" }}
+                                    </div>
+                                    <div class="student-name">
+                                        {{ student.user.get_full_name }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ student.filiere.nom }}</td>
+                            <td>{{ student.matricule }}</td>
+                            <td class="action-buttons">
+                                <a href="{% url 'student_notes' student.id %}" class="action-btn view-btn">
+                                    <i class="fa-solid fa-eye"></i> Consulter
+                                </a>
+                                <a href="#" class="action-btn edit-btn">
+                                    <i class="fa-solid fa-pen"></i> Modifier
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <h3 class="empty-title">Aucun étudiant trouvé</h3>
+                <p class="empty-text">Veuillez sélectionner une filière pour afficher les étudiants</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

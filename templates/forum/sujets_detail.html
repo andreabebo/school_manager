@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">Mes sujets</h2>
+  {% if sujets_commentaires %}
+    {% for sc in sujets_commentaires %}
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ sc.sujet.titre }}</strong>
+            <span class="text-muted small ms-2">({{ sc.sujet.date_creation|date:"d/m/Y H:i" }})</span>
+          </div>
+          {% if user == sc.sujet.auteur %}
+            <div class="dropdown">
+              <button class="btn btn-sm btn-link p-0 text-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a href="{% url 'sujet_update' sc.sujet.pk %}" class="dropdown-item">
+                    <i class="fa-solid fa-pen-to-square me-2"></i>Modifier
+                  </a>
+                </li>
+                <li>
+                  <form action="{% url 'sujet_delete' sc.sujet.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Supprimer ce sujet ?');">
+                      <i class="fa-solid fa-trash me-2"></i>Supprimer
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <p>{{ sc.sujet.description }}</p>
+          {% if sc.sujet.fichier %}
+            <a href="{{ sc.sujet.fichier.url }}" class="btn btn-outline-primary btn-sm mb-2" download>
+              <i class="fa-solid fa-paperclip me-1"></i>Télécharger le fichier
+            </a>
+          {% endif %}
+          <hr>
+          <h6>Commentaires</h6>
+          <ul class="list-group mb-3">
+            {% for commentaire in sc.commentaires %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>{{ commentaire.auteur.get_full_name }}</strong> <span class="text-muted">{{ commentaire.date_pub|date:"d/m/Y H:i" }}</span>
+                  <p class="mb-0">{{ commentaire.texte }}</p>
+                </div>
+                {% if user == commentaire.auteur %}
+                  <div class="dropdown ms-2">
+                    <button class="btn btn-sm btn-link p-0 text-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <span class="dropdown-item text-muted">Aucune action disponible</span>
+                      </li>
+                    </ul>
+                  </div>
+                {% endif %}
+              </li>
+            {% empty %}
+              <li class="list-group-item">Aucun commentaire.</li>
+            {% endfor %}
+          </ul>
+          <form method="post" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="sujet_id" value="{{ sc.sujet.pk }}">
+            <div class="mb-2">
+              <textarea name="texte" class="form-control" rows="2" placeholder="Ajouter un commentaire..." required></textarea>
+            </div>
+            <button class="btn btn-success btn-sm" type="submit">Commenter</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info text-center">Aucun sujet créé pour l’instant.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,173 +1,125 @@
 {% extends 'base.html' %}
-{% block title %}
-Imprimer emploi de temps
-{% endblock title %}
-{% block css %}
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color:whitesmoke;
-            margin: 0;
-            padding: 20px;
-            }
-            
-            .receipt {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-            }
-            
-            h2{
-            text-align: center;
-            font-weight: bolder;
-            font-family: 'Times New Roman', Times, serif;
-            text-decoration: underline;
-            }
-            
-            p {
-            font-size: 25px;
-            line-height: 1.5;
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-            }
-            
-            tbody{
-                background-color: whitesmoke;
-                border: 2px solid black;
-            }
-            
-           
-           
-            thead{
-                background-color: #dada23;
-                border: 2px solid black;
-                
-            }
-            
-            table{
-                width: 900PX;
-                height: 300px;
-            }
-            
-            .andy form{
-                
-                margin-top: 10px;
-            }
-  
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-        
-    </style>
-{% endblock css %}
+
 {% block content %}
-<div class="container">
-<h2>EMPLOI  DE TEMPS</h2>
-{% csrf_token %}
-<p class="text-center">Filière : {{ emploi_de_temps.filiere.nom }}</p>
-<p class="text-center">Semaine du {{ emploi_de_temps.date_debut }} au {{ emploi_de_temps.date_fin }}</p>
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="table-responsive">
+<div class="container mt-4">
+    <h2 class="mb-4">Emplois du Temps</h2>
+    
+    <!-- Formulaire de filtrage -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <!-- Filtre par filière -->
+                <div class="col-md-4">
+                    <label for="filiere" class="form-label">Filière</label>
+                    <select id="filiere" name="filiere" class="form-select">
+                        <option value="">Toutes les filières</option>
+                        {% for filiere in filieres %}
+                            <option value="{{ filiere.id }}" 
+                                {% if filiere.id == selected_filiere %}selected{% endif %}>
+                                {{ filiere.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Filtre par session -->
+                <div class="col-md-4">
+                    <label for="session" class="form-label">Session</label>
+                    <select id="session" name="session" class="form-select">
+                        <option value="">Toutes les sessions</option>
+                        {% for session in sessions %}
+                            <option value="{{ session.id }}" 
+                                {% if session.id == selected_session %}selected{% endif %}>
+                                {{ session.nom_session }} ({{ session.date_session|date:"Y" }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <table  class="table table-bordered text-center">
-        <thead  class="thead-light">
-            <tr >
-                <th>Jours</th>
-                <th>Heure de début</th>
-                <th>Heure de fin</th>
-                <th>Activités</th>
-            
-            </tr>
-        </thead>
-        <tbody>
-            {% for activite in activites_jour %}
-            <tr>
-                <td class="form-control-flex">{{ activite.jour }}</td>
-                <td class="form-control-flex">{{ activite.heure_debut }}</td>
-                <td class="form-control-flex">{{ activite.heure_fin }}</td>
-                <td class="form-control-flex">{{ activite.matiere }} </td>
-            
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-            <div class="d-flex justify-content-center">
+                
+                <!-- Recherche -->
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Recherche</label>
+                    <input type="text" id="search" name="search" 
+                           class="form-control" placeholder="Filière ou matière"
+                           value="{{ search_query }}">
+                </div>
+                
+                <!-- Boutons -->
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                    <a href="?" class="btn btn-outline-secondary">Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Résultats -->
+    {% for emploi in emplois %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    {{ emploi.filiere.nom }} - {{ emploi.session.nom_session }}
+                    <small class="fs-6">
+                        ({{ emploi.date_debut|date:"d/m/Y" }} au {{ emploi.date_fin|date:"d/m/Y" }})
+                    </small>
+                </h4>
+                <div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Jour</th>
+                            <th>Créneau horaire</th>
+                            <th>Matière</th>
+                            <th>Professeur</th>
+                            <th>Salle</th>
+                            <th>Actions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activite in emploi.activites.all %}
+                        <tr>
+                            <td>{{ activite.jour }}</td>
+                            <td>{{ activite.heure_debut|time:"H:i" }} - {{ activite.heure_fin|time:"H:i" }}</td>
+                            <td>{{ activite.matiere.nom }}</td>
+                            <td>{{ activite.professeur.user.get_full_name }}</td>
+                            <td>{{ activite.salle.nom }}</td>
+                            <td>
+                              
+                              <form action="{% url 'supprimer_activite' activite.id %}" method="post" class="d-inline">
+                                  {% csrf_token %}
+                                  <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                              </form>
+                            </td>
+                            <td> 
 
-                <button class="btn btn-secondary" onclick="printReceipt()">Exporter en PDF</button>
-
+                                <a href="{% url 'pdf_emploi.html' activite.id %}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-print"></i> Imprimer</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Aucune activité programmée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="alert alert-info">
+        Aucun emploi du temps trouvé avec ces critères de recherche.
+    </div>
+    {% endfor %}
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="script.js"></script>
-<script>
-
-    function printReceipt() {
-        window.print();
-    }
-</script>
-<script src="script.js"></script>
-<script>
-    // Rediriger vers Gmail lorsque l'onglet Messagerie est cliqué
-    document.getElementById("messageTab").onclick = function(event) {
-        event.preventDefault(); // Empêche le comportement par défaut du lien
-        window.open('https://mail.google.com/', '_blank'); // Ouvre Gmail dans un nouvel onglet
-    };
-
-    // Fonctions de partage
-    function shareOnWhatsApp() {
-        const message = "Voici mon reçu de paiement de scolarité.";
-        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)} ${encodeURIComponent(url)}`, '_blank');
-    }
-
-    function shareOnGmail() {
-        const subject = "Reçu de Paiement de Scolarité";
-        const body = "Voici mon reçu de paiement de scolarité. Consultez-le ici : https://example.com"; // Remplacez par l'URL que vous souhaitez partager
-        window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-    }
-
-    function shareOnTelegram() {
-        const message = "Voici mon reçu de paiement de scolarité.";
-        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(message)}`, '_blank');
-    }
-
-    function shareOnFacebook() {
-        const url = "https://example.com"; // Remplacez par l'URL que vous souhaitez partager
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-    }
-</script>
 {% endblock %}
-

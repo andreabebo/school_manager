@@ -3,107 +3,422 @@
 Ajouter un professeur
 {% endblock title %}
 {% block css %}
-    <style>
-        body{
-            background: rgb(112, 200, 205);
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            display: flex;
+            flex-direction: column;
        
-        h1{
-            text-align: center;
-            font-weight: bold;
-            font-family: robotto;
+    }
+
+    .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        padding: 40px;
+        width: 100%;
+        max-width: 900px;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2a5298;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        border-radius: 2px;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        color: #5a6d8c;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 25px;
+    }
+
+    .form-col {
+        flex: 1;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #2a5298;
+        font-size: 1.1rem;
+        padding-left: 5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="date"],
+    select {
+        width: 100%;
+        padding: 16px 20px 16px 50px;
+        border: 2px solid #e0e7ff;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background-color: #f8fbff;
+        color: #2a3f5f;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        height: 56px;
+    }
+
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: #4a7bff;
+        box-shadow: 0 0 0 4px rgba(74, 123, 255, 0.15);
+        background-color: white;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4a7bff;
+        font-size: 1.3rem;
+    }
+
+    .btn-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
+        overflow: hidden;
+        position: relative;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    }
+
+    .btn-submit:active {
+        transform: translateY(1px);
+    }
+
+    .btn-submit i {
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-submit:hover i {
+        transform: translateX(4px);
+    }
+
+    .btn-submit::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn-submit:hover::after {
+        left: 100%;
+    }
+
+    .decoration {
+        position: absolute;
+        z-index: 0;
+        opacity: 0.8;
+    }
+
+    .decoration.circle {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(74, 123, 255, 0.15) 0%, rgba(0, 242, 254, 0.1) 100%);
+        top: -50px;
+        right: -50px;
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .decoration.square {
+        width: 90px;
+        height: 90px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(30, 60, 114, 0.1) 0%, rgba(42, 82, 152, 0.08) 100%);
+        transform: rotate(45deg);
+        bottom: -35px;
+        left: -35px;
+        animation: float 10s ease-in-out infinite;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-        .container{
-            border: none;
-            height: 500px;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .row{
-            margin-bottom: 60px;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
         }
-        .container .row .col{
-            margin-top: 10px;
+        50% {
+            transform: translateY(-20px) rotate(5deg);
         }
-        .btn.btn-secondary{
-            margin-left: 400px;
-            width: 200px;
-            border-radius: 8px;
-            background: black;
-            color: white;
+        100% {
+            transform: translateY(0) rotate(0deg);
         }
-        label{
-            font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            gap: 15px;
         }
         
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-    </style>
+        .form-container {
+            padding: 30px 20px;
+        }
+        
+        .title {
+            font-size: 2.2rem;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="date"],
+        select {
+            padding: 14px 16px 14px 50px;
+            font-size: 1rem;
+            height: 52px;
+        }
+        
+        .btn-submit {
+            padding: 14px 28px;
+            font-size: 1rem;
+        }
+        
+        .decoration.circle {
+            width: 100px;
+            height: 100px;
+            top: -30px;
+            right: -30px;
+        }
+        
+        .decoration.square {
+            width: 60px;
+            height: 60px;
+            bottom: -20px;
+            left: -20px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        body {
+            padding: 15px;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+        }
+        
+        .form-container {
+            padding: 25px 15px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="date"],
+        select {
+            padding: 12px 14px 12px 45px;
+            height: 48px;
+        }
+        
+        .input-icon {
+            left: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+        }
+        
+        .decoration.circle,
+        .decoration.square {
+            display: none;
+        }
+    }
+</style>
 {% endblock css %}
 {% block content %}
 
-    <div class="container">
-        
-            <form class="form" method="post" action="{% url 'professeur' %}" class="form">
-                {% csrf_token %}
-                <div class="row row-cols-2">
-                    <div class="col">
-                        <label for="#username">Noms:</label>
-                        <input class="form-control sip" type="text" name="last_name"><br>
+<div class="form-container">
+    <div class="decoration circle"></div>
+    <div class="decoration square"></div>
+    
+    <div class="header">
+        <h1 class="title">AJOUTER UN PROFESSEUR</h1>
+        <p class="subtitle">Complétez les informations pour enregistrer un nouveau professeur</p>
+    </div>
+    
+    <form method="post" action="{% url 'professeur' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="last_name">Noms</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input class="sip" type="text" name="last_name" id="last_name" placeholder="Ex: Dupont" required>
                     </div>
-                    <div class="col">
-                        <label for="#username">Prénoms:</label>
-                        <input class="form-control sip" type="text" name="first_name"><br>
-                    </div>
-                    <div class="col">
-                        <label for="#email">Email:</label>
-                        <input class="form-control sip" type="email" name="email"><br>
-                    </div>
-                    <div class="col">
-                        <label for="#username">Date de naissance:</label>
-                        <input class="form-control sip" type="date" name="age"><br>
                 </div>
                 
-                    <div class="col">
-                        <label for="#password">Specialite:</label>
-                        <input class="form-control sip" type="text" name="specialite"><br>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input class="sip" type="email" name="email" id="email" placeholder="Ex: dupont@example.com" required>
                     </div>
-                    <div class="col">        
-                        <label for="#username">Telephone:</label>
-                        <input class="form-control sip" type="tel" name="numero" required><br>
-                    </div>
-                    <div class="col">
-                        <label for="#password">Mot de passe:</label>
-                        <input class="form-control sip" type="password" name="password"><br>
-                    </div>    
                 </div>
-                <button class="btn btn-secondary" type="submit">Ajouter</button><br>
-            </form>
+                
+                <div class="form-group">
+                    <label for="age">Date de naissance</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar input-icon"></i>
+                        <input class="sip" type="date" name="age" id="age" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input class="sip" type="password" name="password" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+            </div>
             
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="first_name">Prénoms</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input class="sip" type="text" name="first_name" id="first_name" placeholder="Ex: Jean" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sexe">Sexe</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-venus-mars input-icon"></i>
+                        <select class="sip" name="sexe" id="sexe" required>
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="numero">Téléphone</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input class="sip" type="tel" name="numero" id="numero" placeholder="Ex: +225 07 00 00 00 00" required>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <button class="btn-submit" type="submit">
+            <i class="fas fa-user-plus"></i> Ajouter le professeur
+        </button>
+    </form>
+</div>
 
 {% endblock content %}

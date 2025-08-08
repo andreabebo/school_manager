@@ -2,58 +2,79 @@
 {% block title %}{% endblock title %}
 {% block css %}
 <style>
-        h1{
-            text-align: center;
+    body {
+        background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
+    }
+    h1 {
+        text-align: center;
+        font-weight: bold;
+        color: #2a5298;
+        margin-bottom: 25px;
+    }
+    .left {
+        margin-left: 10px;
+        color: #2a5298;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .left:hover {
+        color: #1e3c72;
+    }
+    .card {
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        margin-bottom: 30px;
+    }
+    .card-header {
+        background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 18px 18px 0 0;
+    }
+    table {
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+    }
+    th, td {
+        text-align: center;
+        padding: 10px 8px;
+        font-size: 1rem;
+    }
+    th {
+        background: #2a5298;
+        color: #fff;
+        font-weight: 600;
+    }
+    tr:nth-child(even) {
+        background: #f2f6fc;
+    }
+    tr:hover {
+        background: #e0eafc;
+    }
+    .fa-trash-can {
+        color: #fff;
+        background: #e74c3c;
+        border-radius: 5px;
+        padding: 5px 8px;
+        transition: background 0.2s;
+    }
+    .fa-trash-can:hover {
+        background: #c0392b;
+    }
+    @media (max-width: 700px) {
+        th, td {
+            font-size: 0.9rem;
+            padding: 7px 2px;
         }
-        .andy form{
-            margin-top: 10px;
+        .card-header {
+            font-size: 1rem;
         }
-        .fa-trash-can{
-            background: red;
-            border-radius: 5px;
-        }
-        .sit{
-            text-decoration: none;
-            color: black;
-        }
-        .left{
-            margin-left: 50px ;
-            size: 20px;
-        }
-        .fa-arrow-left{
-            font-size: 2em;
-            width: 35px;
-        }
-        
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-     </style>
+    }
+</style>
 {% endblock css %}
 {% block content %}
      <h1>Specialites et classe(niveau)</h1>
@@ -70,9 +91,11 @@
             <table id="datatablesSimple">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Specialite</th>
-                        <th>Classe</th>
+                        <th>ID</th>
+                        <th>Département</th>
+                        <th>Nom de la filière</th>
+                        <th>Montant global</th>
+                        <th>Statut</th>
                         <th>Inscrits</th>
                         <th>Action</th>
                         
@@ -85,9 +108,18 @@
                             <td> {{ filiere.id }} </td>
                             <td> {{ filiere.departement }} </td>
                             <td> {{ filiere.nom }} </td>
+                            <td> {{ filiere.montant_global }} FCFA</td>
+                            <td>
+                                {% if filiere.active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
                             <td> {{ filiere.total_inscrit }} </td>
-                            
-                            <td> <a href="{% url 'desactiver_filiere' filiere.id %}"><i class="fa-solid fa-trash-can"></i></a>  </td>
+                            <td>
+                                <a href="{% url 'desactiver_filiere' filiere.id %}" class="btn btn-sm btn-danger" title="Désactiver"><i class="fa-solid fa-trash-can"></i></a>
+                            </td>
                             
                             
 

@@ -1,69 +1,138 @@
 {% extends 'base.html' %}
-{% block title %}{% endblock %}
+{% block title %}Gestion des Activités - {{ emploi_de_temps.id}}{% endblock %}
+
 {% block css %}
 <style>
     .mx-7 {
         margin-left: 7rem;
         margin-right: 7rem;
     }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    .time-inputs {
+        display: flex;
+        gap: 1rem;
+    }
 </style>
-{% endblock css %}
-{% block content %}
+{% endblock %}
 
+{% block content %}
+<div class="container-fluid">
+    <!-- Formulaire d'ajout -->
     <div class="card my-4 mx-7 shadow mb-5 bg-white rounded">
-        <div class="card-header">
+        <div class="card-header bg-primary text-white">
             <h5 class="card-title">Ajouter des activités</h5>
         </div>
         <div class="card-body">
-            <form method="POST" class="row">
+            <form method="POST" class="row g-3">
                 {% csrf_token %}
-                <div class="form-group col-6">
-                    <label for="day">Jour</label>
-                    <input type="text" class="form-control" id="day" name="jour">
+                
+                <!-- Jour -->
+                <div class="col-md-6">
+                    <label for="day" class="form-label">Jour</label>
+                    <select class="form-control" id="day" name="jour" required>
+                        <option value="">-- Sélectionner un jour --</option>
+                        <option value="Lundi">Lundi</option>
+                        <option value="Mardi">Mardi</option>
+                        <option value="Mercredi">Mercredi</option>
+                        <option value="Jeudi">Jeudi</option>
+                        <option value="Vendredi">Vendredi</option>
+                        <option value="Samedi">Samedi</option>
+                        <option value="Dimanche">Dimanche</option>
+                    </select>
                 </div>
-                <div class="form-group col-6">
-                    <label for="classe">Matiere, professeur, salle :</label>
-                    <input type="text" class="form-control" id="classe" name="matiere">
+                
+                <!-- Matière -->
+                <div class="col-md-6">
+                    <label for="matiere" class="form-label">Matière</label>
+                    <select class="form-control" id="matiere" name="matiere" required>
+                        <option value="">-- Choisir une matière --</option>
+                        {% for matiere in matieres %}
+                            <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="form-group col-6">
-                    <label for="date-start">Date debut :</label>
-                    <input type="time" class="form-control" id="date-start" name="heure_debut">
+                
+                <!-- Salle -->
+                <div class="col-md-6">
+                    <label for="salle" class="form-label">Salle</label>
+                    <select class="form-control" id="salle" name="salle" required>
+                        <option value="">-- Choisir une salle --</option>
+                        {% for salle in salles %}
+                            <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="form-group col-6">
-                    <label for="date-end">Date fin :</label>
-                    <input type="time" class="form-control" id="date-end" name="heure_fin">
+                
+                <!-- Professeur -->
+                <div class="col-md-6">
+                    <label for="professeur" class="form-label">Formateur</label>
+                    <select class="form-control" id="professeur" name="professeur" required>
+                        <option value="">-- Choisir un formateur --</option>
+                        {% for professeur in professeurs %}
+                            <option value="{{ professeur.id }}">
+                                {{ professeur.user.get_full_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-12 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary mt-4 w-25">Ajouter</button>
+                
+                <!-- Heures -->
+                <div class="col-md-6">
+                    <label for="date-start" class="form-label">Heure de début</label>
+                    <input type="time" class="form-control" id="date-start" name="heure_debut" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="date-end" class="form-label">Heure de fin</label>
+                    <input type="time" class="form-control" id="date-end" name="heure_fin" required>
+                </div>
+                
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary px-4">Ajouter l'activité</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Liste des activités -->
     <div class="card my-4 mx-7 shadow mb-5 bg-white rounded">
-        <div class="card-header">
-            <h3 class="card-title">Activités ajoutées</h3>
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">Activités programmées</h3>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for activite in activites_jour %}
+            {% if activites_jour %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Jour</th>
+                            <th>Matière</th>
+                            <th>Formateur</th>
+                            <th>Salle</th>
+                            <th>Heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activite in activites_jour %}
                         <tr>
                             <td>{{ activite.jour }}</td>
-                            <td>{{ activite.matiere }}</td>
-                            <td>{{ activite.heure_debut }} - {{ activite.heure_fin }}</td>
+                            <td>{{ activite.matiere.nom }}</td>
+                            <td>{{ activite.professeur.user.get_full_name }}</td>
+                            <td>{{ activite.salle.nom }}</td>
+                            <td>{{ activite.heure_debut|time:"H:i" }} - {{ activite.heure_fin|time:"H:i" }}</td>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                Aucune activité programmée pour le moment.
+            </div>
+            {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}
-                                                                                      

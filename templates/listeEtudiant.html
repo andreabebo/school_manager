@@ -1,92 +1,299 @@
 {% extends "base.html" %}
+{% block title %}LISTE DES ÉTUDIANTS{% endblock title %}
 
-
-{% block title %}LISTE DES ETUDIANTS{% endblock title %}
 {% block css %}
-    <style>
-        .icon-container{
-            text-align: right;
-            margin-top: 10px;
-        }
-        .fa-plus{
-            font-size: 2em;
-            width: 35px;
-            
-            
-        }
-        .custom-link{
-            font-size: 24px;
-            background-color: white;
-            margin-right: 50px;
-            text-decoration: none;
-        }
-        h1{
-            text-align: center;
-            font-weight: bolder;
-        }
-        .nime{
-            width: 300px;
-            
-        }
-        .tip{
-            margin-left: 25px;
+<style>
+    /* Style universel pour tous les formulaires */
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .page-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    .header-card {
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 25px 30px;
+        position: relative;
+        margin-bottom: -10px;
+        z-index: 2;
+    }
+    
+    .header-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        transform: rotate(30deg);
+    }
+    
+    .content-card {
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        position: relative;
+    }
+    
+    .page-title {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        position: relative;
+        margin: 0;
+        font-size: 2.2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+    }
+    
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .add-button {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 25px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .add-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .add-button::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 20px;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(30deg);
+        transition: all 0.6s;
+    }
+    
+    .add-button:hover::after {
+        left: 120%;
+    }
+    
+    .session-selector {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 12px 20px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .session-selector label {
+        font-weight: 600;
+        color: #1e3c72;
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .session-select {
+        padding: 10px 20px;
+        border: 1px solid #d1d9e6;
+        border-radius: 50px;
+        background: #f5f9ff;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+        min-width: 250px;
+    }
+    
+    .session-select:focus {
+        border-color: #4a7bff;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 123, 255, 0.2);
+        outline: none;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px 12px 0 0;
+        font-weight: 600;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .table-container {
+        border-radius: 0 0 12px 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th {
+        background-color: #1e3c72;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f8fbff;
+    }
+    
+    tr:nth-child(odd) {
+        background-color: white;
+    }
+    
+    tr:hover {
+        background-color: #eef5ff;
+    }
+    
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e7ff;
+        color: #2a3f5f;
+    }
+    
+    .action-cell {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .action-icon {
+        color: #1e3c72;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .delete-icon:hover {
+        color: #e74c3c;
+        transform: scale(1.2);
+    }
+    
+    .edit-icon:hover {
+        color: #3498db;
+        transform: scale(1.2);
+    }
+    
+    .no-data {
+        text-align: center;
+        padding: 30px;
+        color: #7f8c9a;
+        font-style: italic;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 992px) {
+        .action-bar {
+            flex-direction: column;
+            align-items: stretch;
         }
         
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-    </style>
-{% endblock css %}
-{% block content %}
-
-<div class="icon-container">
-    <a class="custom-link" href="/choix_session" ><i class="fa-solid fa-plus"></i>Ajouter</a>
-</div>
-<div class="suit">
-<form method="get" id="myForm" action="{% url 'rechercher_etudiants' %}">
-    <label class="tip"><b>Session</b></label>
-    <select class="nime" name="session" id="selectOption">
-        <option value="">--------------</option>
-        {% for session in sessions %}
-            <option value="{{session.pk}}" {% if session.pk == session_id %}selected{% endif %}>{{session.nom_session}}</option>
-        {% endfor %}
-    </select>
-</form>
-
-</div>  
-<div class="container-fluid px-4">
-    <h1 class="mt-4">LISTE DES ETUDIANTS ENREGISTRES</h1>
+        .session-selector {
+            flex-direction: column;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        
+        .session-select {
+            width: 100%;
+        }
+    }
     
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            COORDONNEES
+    @media (max-width: 768px) {
+        table {
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .page-container {
+            padding: 10px;
+        }
+        
+        .content-card {
+            padding: 20px 15px;
+        }
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">LISTE DES ÉTUDIANTS ENREGISTRÉS</h1>
+    
+    <div class="header-card">
+        <h4>Gestion des étudiants</h4>
+    </div>
+    
+    <div class="content-card">
+        <div class="action-bar">
+            <a class="add-button" href="/choix_session">
+                <i class="fa-solid fa-plus"></i> Ajouter un nouvel étudiant
+            </a>
+            
+            <form method="get" id="myForm" action="{% url 'rechercher_etudiants' %}" class="session-selector">
+                <label for="selectOption"><b>Session</b></label>
+                <select class="session-select" name="session" id="selectOption">
+                    <option value="">-- Toutes les sessions --</option>
+                    {% for session in sessions %}
+                        <option value="{{session.pk}}" {% if session.pk == session_id %}selected{% endif %}>{{session.nom_session}}</option>
+                    {% endfor %}
+                </select>
+            </form>
         </div>
-        <div class="card-body">
+        
+        <div class="table-container">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                COORDONNÉES DES ÉTUDIANTS
+            </div>
             <table id="datatablesSimple">
                 <thead>
                     <tr>
@@ -94,39 +301,48 @@
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Email</th>
-                        <th>Age date</th>
+                        <th>Date de naissance</th>
+                        <th>Sexe</th>
                         <th>Ville</th>
                         <th>Filière</th>
                         <th>Matricule</th>
                         <th>Diplôme</th>
                         <th>Contact</th>
-                        <th>Action</th>
-                        <th>Action</th>
-                       
+                        <th colspan="2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in students %}
                         <tr>
-                            <td> {{ student.id }} </td>
-                            <td> {{ student.user.first_name }} </td>
-                            <td> {{ student.user.last_name }} </td>
-                            <td> {{ student.user.email }} </td>
-                            <td> {{ student.age }} </td>
-                            <td> {{ student.ville }} </td>
-                            <td> {{ student.filiere }} </td>
-                            <td> {{ student.matricule }} </td>
-                            <td> {{ student.diplome }} </td>
-                            <td> {{ student.contact }} </td>
-                            <td> <a href="{% url 'desactiver_utilisateur' student.user.id %}"><i class="fa-solid fa-trash-can"></i></a>  </td>
-                            <!-- <td> <a href="{% url 'edit_user' student.user.id %}"><i class="fa-solid fa-pen-to-square"></i></a>  </td> -->
-                            <td> <a href="{% url 'edit_user' student.user.id %}">Edit</a>  </td>
-                            
-
+                            <td>{{ student.id }}</td>
+                            <td>{{ student.user.first_name }}</td>
+                            <td>{{ student.user.last_name }}</td>
+                            <td>{{ student.user.email }}</td>
+                            <td>{{ student.age }}</td>
+                            <td>
+                                {% if student.sexe == 'M' %}
+                                    Masculin
+                                {% else %}
+                                    Féminin
+                                {% endif %}
+                            </td>
+                            <td>{{ student.ville }}</td>
+                            <td>{{ student.filiere }}</td>
+                            <td>{{ student.matricule }}</td>
+                            <td>{{ student.diplome }}</td>
+                            <td>{{ student.contact }}</td>
+                            <td class="action-cell">
+                                <a href="{% url 'desactiver_utilisateur' student.user.id %}" class="action-icon delete-icon" title="Supprimer">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                                <a href="{% url 'edit_user' student.user.id %}" class="action-icon edit-icon" title="Modifier">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="6">Aucun étudiant inscrit ...</td>
+                            <td colspan="12" class="no-data">Aucun étudiant inscrit pour cette session</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -134,24 +350,28 @@
         </div>
     </div>
 </div>
-
-
-
 {% endblock content %}
+
 {% block js %}
 <script>
-const selectElement=document.getElementById('selectOption');
+const selectElement = document.getElementById('selectOption');
 const form = document.getElementById('myForm');
 
-selectElement.addEventListener('change', function(){
- form.submit();
+selectElement.addEventListener('change', function() {
+    form.submit();
 });
 
+// Amélioration UX : animation au survol des lignes
+const tableRows = document.querySelectorAll('tbody tr');
+tableRows.forEach(row => {
+    row.addEventListener('mouseenter', () => {
+        row.style.transform = 'translateX(5px)';
+        row.style.transition = 'transform 0.3s ease';
+    });
+    
+    row.addEventListener('mouseleave', () => {
+        row.style.transform = 'translateX(0)';
+    });
+});
 </script>   
-
 {% endblock js %}
-
-
-                 
-         
-        

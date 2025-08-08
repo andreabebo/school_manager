@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Confirmer la suppression</h2>
+    
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            Supprimer l'attestation
+        </div>
+        <div class="card-body">
+            <p>Êtes-vous sûr de vouloir supprimer cette attestation ?</p>
+            <p><strong>Étudiant:</strong> {{ attestation.student.user.get_full_name }}</p>
+            <p><strong>Type:</strong> {{ attestation.get_type_attestation_display }}</p>
+            <p><strong>Date d'émission:</strong> {{ attestation.date_emission|date:"d/m/Y" }}</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Confirmer la suppression
+                </button>
+                <a href="{% url 'attestation_detail' attestation.pk %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        {% if object %}Modifier{% else %}Créer{% endif %} une Liste de Présence
+    </h2>
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    <form method="post" id="presence-form">
+        {% csrf_token %}
+        
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                Informations du cours
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.filiere.label_tag }}
+                        {{ form.filiere }}
+                        <div class="text-danger">{{ form.filiere.errors }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.matiere.label_tag }}
+                        {{ form.matiere }}
+                        <div class="text-danger">{{ form.matiere.errors }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.professeur.label_tag }}
+                        {{ form.professeur }}
+                        <div class="text-danger">{{ form.professeur.errors }}</div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        {{ form.date_cours.label_tag }}
+                        {{ form.date_cours }}
+                        <div class="text-danger">{{ form.date_cours.errors }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.heure_debut.label_tag }}
+                        {{ form.heure_debut }}
+                        <div class="text-danger">{{ form.heure_debut.errors }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.heure_fin.label_tag }}
+                        {{ form.heure_fin }}
+                        <div class="text-danger">{{ form.heure_fin.errors }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.commentaire.label_tag }}
+                        {{ form.commentaire }}
+                        <div class="text-danger">{{ form.commentaire.errors }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <span>Présences des étudiants</span>
+                <button type="button" id="add-row" class="btn btn-sm btn-success">
+                    <i class="bi bi-plus-circle"></i> Ajouter une ligne
+                </button>
+            </div>
+            <div class="card-body">
+                {{ presence_formset.management_form }}
+                
+                <table class="table" id="presence-table">
+                    <thead>
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Présent</th>
+                            <th>Justification</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in presence_formset %}
+                        <tr class="presence-row">
+                            <td>
+                                {{ form.id }}
+                                {{ form.student }}
+                                <div class="text-danger">{{ form.student.errors }}</div>
+                            </td>
+                            <td>
+                                {{ form.est_present }}
+                                <div class="text-danger">{{ form.est_present.errors }}</div>
+                            </td>
+                            <td>
+                                {{ form.justification }}
+                                <div class="text-danger">{{ form.justification.errors }}</div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger remove-row">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Enregistrer
+            </button>
+            <a href="{% url 'presence_list' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Annuler
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Template pour les nouvelles lignes (caché) -->
+<template id="row-template">
+    <tr class="presence-row">
+        <td>
+            <select name="presences-__prefix__-student" class="form-select student-select" required id="id_presences-__prefix__-student">
+                <option value="">Sélectionner un étudiant</option>
+                {% for etudiant in etudiants %}
+                <option value="{{ etudiant.id }}">{{ etudiant.user.get_full_name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            <input type="checkbox" name="presences-__prefix__-est_present" class="form-check-input" checked id="id_presences-__prefix__-est_present">
+        </td>
+        <td>
+            <input type="text" name="presences-__prefix__-justification" class="form-control" id="id_presences-__prefix__-justification">
+        </td>
+        <td>
+            <button type="button" class="btn btn-sm btn-danger remove-row">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ajouter une nouvelle ligne
+    document.getElementById('add-row').addEventListener('click', function() {
+        const totalForms = document.getElementById('id_presences-TOTAL_FORMS');
+        const formIdx = parseInt(totalForms.value);
+        const template = document.getElementById('row-template').innerHTML;
+        const newRow = template.replace(/__prefix__/g, formIdx);
+        
+        document.querySelector('#presence-table tbody').insertAdjacentHTML('beforeend', newRow);
+        totalForms.value = formIdx + 1;
+    });
+    
+    // Supprimer une ligne
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-row')) {
+            const row = e.target.closest('.presence-row');
+            if (document.querySelectorAll('.presence-row').length > 1) {
+                row.remove();
+                updateTotalForms();
+            }
+        }
+    });
+    
+    // Mettre à jour le nombre total de formulaires
+    function updateTotalForms() {
+        const rows = document.querySelectorAll('.presence-row');
+        document.getElementById('id_presences-TOTAL_FORMS').value = rows.length;
+        
+        // Réindexer les formulaires
+        rows.forEach((row, index) => {
+            row.querySelectorAll('input, select').forEach(input => {
+                input.name = input.name.replace(/presences-\d+/, `presences-${index}`);
+                input.id = input.id.replace(/presences-\d+/, `presences-${index}`);
+            });
+        });
+    }
+    
+    // Charger les étudiants lorsqu'une filière est sélectionnée
+    document.getElementById('id_filiere').addEventListener('change', function() {
+        const filiereId = this.value;
+        if (filiereId) {
+            fetch(`/api/get_etudiants/?filiere_id=${filiereId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Mettre à jour tous les menus déroulants des étudiants
+                    document.querySelectorAll('.student-select').forEach(select => {
+                        // Sauvegarder la valeur sélectionnée
+                        const selectedValue = select.value;
+                        
+                        // Vider le menu déroulant
+                        select.innerHTML = '<option value="">Sélectionner un étudiant</option>';
+                        
+                        // Ajouter les nouveaux étudiants
+                        data.forEach(etudiant => {
+                            const option = document.createElement('option');
+                            option.value = etudiant.id;
+                            option.textContent = etudiant.nom;
+                            select.appendChild(option);
+                        });
+                        
+                        // Restaurer la sélection précédente si possible
+                        if (selectedValue) {
+                            select.value = selectedValue;
+                        }
+                    });
+                });
+        }
+    });
+});
+
+
+    // ... script existant ... 
+    
+    // Empêcher la sélection du même étudiant
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('student-select')) {
+            const selectedValue = e.target.value;
+            const allSelects = document.querySelectorAll('.student-select');
+            const currentRow = e.target.closest('.presence-row');
+            
+            allSelects.forEach(select => {
+                const row = select.closest('.presence-row');
+                if (row !== currentRow && select.value === selectedValue && selectedValue !== "") {
+                    alert("Cet étudiant est déjà sélectionné dans une autre ligne. Veuillez en choisir un autre.");
+                    e.target.value = "";
+                }
+            });
+        }
+    });
+    </script>
+{% endblock %}

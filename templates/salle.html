@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+{% block title %}Création de salle{% endblock title %}
+{% block css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        color: #333;
+        overflow-x: hidden;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        animation: fadeInDown 0.8s ease-out;
+        width: 100%;
+    }
+
+    .title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        border-radius: 2px;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.85);
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .form-group {
+        margin-bottom: 28px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #2a5298;
+        font-size: 1.1rem;
+        padding-left: 5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 16px 20px 16px 50px;
+        border: 2px solid #e0e7ff;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background-color: #f8fbff;
+        color: #2a3f5f;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #4a7bff;
+        box-shadow: 0 0 0 4px rgba(74, 123, 255, 0.15);
+        background-color: white;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4a7bff;
+        font-size: 1.3rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 36px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
+        overflow: hidden;
+        position: relative;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn i {
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover i {
+        transform: translateX(4px);
+    }
+
+    .btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn:hover::after {
+        left: 100%;
+    }
+
+    .decoration {
+        position: absolute;
+        z-index: 0;
+    }
+
+    .decoration.circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(74, 123, 255, 0.15) 0%, rgba(0, 242, 254, 0.1) 100%);
+        top: -40px;
+        right: -40px;
+    }
+
+    .decoration.square {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(30, 60, 114, 0.1) 0%, rgba(42, 82, 152, 0.08) 100%);
+        transform: rotate(45deg);
+        bottom: -30px;
+        left: -30px;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding: 15px;
+        }
+        
+        .title {
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            padding: 0 15px;
+        }
+        
+        .form-card {
+            padding: 30px 20px;
+        }
+        
+        input[type="text"] {
+            padding: 14px 16px 14px 50px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            font-size: 1rem;
+        }
+        
+        .decoration.circle {
+            width: 80px;
+            height: 80px;
+            top: -20px;
+            right: -20px;
+        }
+        
+        .decoration.square {
+            width: 50px;
+            height: 50px;
+            bottom: -15px;
+            left: -15px;
+        }
+    }
+    
+    @media (max-width: 380px) {
+        .title {
+            font-size: 1.8rem;
+        }
+        
+        .form-card {
+            padding: 25px 15px;
+        }
+        
+        input[type="text"] {
+            padding: 12px 14px 12px 45px;
+        }
+        
+        .input-icon {
+            left: 15px;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+{% endblock css %}
+{% block content %}
+
+<div class="container">
+    <div class="header">
+        <h1 class="title">CRÉATION DE SALLE</h1>
+        <p class="subtitle">Ajoutez une nouvelle salle à votre système de gestion académique</p>
+    </div>
+    
+    <div class="form-card">
+        <div class="decoration circle"></div>
+        <div class="decoration square"></div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nom">Nom de la salle</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-door-open input-icon"></i>
+                    <input type="text" name="nom" id="nom" placeholder="Ex: Salle A1" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">
+                Créer la salle <i class="fa-solid fa-arrow-right-long"></i>
+            </button> 
+        </form>
+    </div>
+</div>
+{% endblock content %}

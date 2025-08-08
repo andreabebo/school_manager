@@ -1,56 +1,229 @@
-{% extends "base.html" %}
-{% block title %}{% endblock title %}
-{% block css %}
-    <style>
-        .card-body{
-            width: 800PX;
-        }
-
-    </style>
-{% endblock css %}
+{% extends 'base.html' %}
 {% block content %}
-<div class="container-fluid px-4">
-    <div class="container"> 
-        <h1>Session</h1>
+<div class="container mt-4">
+    <h2 class="mb-4">Statistiques</h2>
+    
+    <div class="d-flex justify-content-between mb-4">
+        <a href="{% url 'generer_statistiques' %}" class="btn btn-primary">
+            <i class="bi bi-arrow-repeat"></i> Générer les statistiques
+        </a>
     </div>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="card mb-4">
-                <div class="card-body"><canvas id="BarChart" ></canvas></div>
+    
+    <!-- Statistiques globales -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Statistiques globales
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <h3>{{ total_global_inscrits }}</h3>
+                    <p>Étudiants inscrits</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h3>{{ total_global_reussite|floatformat:2 }}%</h3>
+                    <p>Taux de réussite moyen</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h3>{{ total_global_inscrits }}</h3>
+                    <p>Total étudiants</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Graphiques -->
+    <div class="row mb-4">
+        <!-- Bar Chart: Étudiants inscrits par filière -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    Étudiants inscrits par filière
+                </div>
+                <div class="card-body">
+                    <canvas id="barChartInscrits"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pie Chart: Répartition par sexe -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Répartition par sexe
+                </div>
+                <div class="card-body">
+                    <canvas id="pieChartSexe"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <!-- Bar Chart: Taux de réussite par filière -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    Taux de réussite par filière
+                </div>
+                <div class="card-body">
+                    <canvas id="barChartReussite"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bar Chart: Répartition H/F par filière -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    Répartition hommes/femmes par filière
+                </div>
+                <div class="card-body">
+                    <canvas id="barChartSexe"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-{% endblock content %}
-{% block js %}
+<!-- Inclure Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    var ctx = document.getElementById("BarChart");
-    var myLineChart = new Chart(ctx, {
+// Récupérer les données passées depuis Django
+const chartData = JSON.parse('{{ chart_data|escapejs }}');
+
+// Fonction pour générer des couleurs uniques
+function getColor(index, opacity = 1) {
+    const colors = chartData.colors;
+    return colors[index % colors.length] + (opacity !== 1 ? opacity.toString(16).substring(2, 4) : '');
+}
+
+// 1. Bar Chart: Étudiants inscrits par filière
+const barCtxInscrits = document.getElementById('barChartInscrits').getContext('2d');
+new Chart(barCtxInscrits, {
     type: 'bar',
     data: {
-        labels: {{labels|safe}},
+        labels: chartData.filiere_labels,
         datasets: [{
-        label: "Total inscrits",
-        backgroundColor: "rgba(2,117,216,1)",
-        borderColor: "rgba(2,117,216,1)",
-        data: {{data|safe}},
-        }],
+            label: 'Nombre d\'inscrits',
+            data: chartData.inscrits_data,
+            backgroundColor: chartData.filiere_labels.map((_, i) => getColor(i, 0.7)),
+            borderColor: chartData.filiere_labels.map((_, i) => getColor(i)),
+            borderWidth: 1
+        }]
     },
     options: {
+        responsive: true,
         scales: {
-            yAxes: [{
-              ticks: {
-                min: 0,
-              },
-              gridLines: {
-                display: true
-              }
-            }],
-            responsive: true,
-            maintainAspectRation: false
-        },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre d'étudiants"
+                }
+            }
+        }
     }
-    });
+});
+
+// 2. Pie Chart: Répartition par sexe
+const pieCtxSexe = document.getElementById('pieChartSexe').getContext('2d');
+new Chart(pieCtxSexe, {
+    type: 'pie',
+    data: {
+        labels: chartData.sexe_labels,
+        datasets: [{
+            data: chartData.sexe_data,
+            backgroundColor: [getColor(1, 0.7), getColor(0, 0.7)],
+            borderColor: [getColor(1), getColor(0)],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const value = context.raw;
+                        const percentage = Math.round((value / total) * 100);
+                        return `${context.label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    }
+});
+
+// 3. Bar Chart: Taux de réussite par filière
+const barCtxReussite = document.getElementById('barChartReussite').getContext('2d');
+new Chart(barCtxReussite, {
+    type: 'bar',
+    data: {
+        labels: chartData.filiere_labels,
+        datasets: [{
+            label: 'Taux de réussite (%)',
+            data: chartData.reussite_data,
+            backgroundColor: chartData.filiere_labels.map((_, i) => getColor(i + 2, 0.7)),
+            borderColor: chartData.filiere_labels.map((_, i) => getColor(i + 2)),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: "Taux de réussite (%)"
+                }
+            }
+        }
+    }
+});
+
+// 4. Bar Chart: Répartition H/F par filière
+const barCtxSexe = document.getElementById('barChartSexe').getContext('2d');
+new Chart(barCtxSexe, {
+    type: 'bar',
+    data: {
+        labels: chartData.filiere_labels,
+        datasets: [
+            {
+                label: 'Hommes',
+                data: chartData.hommes_data,
+                backgroundColor: getColor(1, 0.7),
+                borderColor: getColor(1),
+                borderWidth: 1
+            },
+            {
+                label: 'Femmes',
+                data: chartData.femmes_data,
+                backgroundColor: getColor(0, 0.7),
+                borderColor: getColor(0),
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre d'étudiants"
+                }
+            }
+        }
+    }
+});
 </script>
-{% endblock js %}
+{% endblock %}

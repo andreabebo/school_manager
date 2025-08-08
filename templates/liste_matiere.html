@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block css %}
+<style>
+
+ body {
+        background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
+    }
+    h1 {
+        text-align: center;
+        font-weight: bold;
+        color: #2a5298;
+        margin-bottom: 25px;
+    }
+    .left {
+        margin-left: 10px;
+        color: #2a5298;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .left:hover {
+        color: #1e3c72;
+    }
+    .card {
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        margin-bottom: 30px;
+    }
+    .card-header {
+        background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 18px 18px 0 0;
+    }
+    table {
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+    }
+    th, td {
+        text-align: center;
+        padding: 10px 8px;
+        font-size: 1rem;
+    }
+    th {
+        background: #2a5298;
+        color: #fff;
+        font-weight: 600;
+    }
+    tr:nth-child(even) {
+        background: #f2f6fc;
+    }
+    tr:hover {
+        background: #e0eafc;
+    }
+    .fa-trash-can {
+        color: #fff;
+        background: #e74c3c;
+        border-radius: 5px;
+        padding: 5px 8px;
+        transition: background 0.2s;
+    }
+    .fa-trash-can:hover {
+        background: #c0392b;
+    }
+    @media (max-width: 700px) {
+        th, td {
+            font-size: 0.9rem;
+            padding: 7px 2px;
+        }
+        .card-header {
+            font-size: 1rem;
+        }
+    }
+
+</style>
+{% endblock css %}
+
+{% block content %}
+
+<div class="col-md-3">
+             <form method="get" class="form-inline mb-4">
+                <label class="mr-2">Filtrer par filière :</label>
+                <select name="filiere" class="form-control mr-2" onchange="this.form.submit()">
+                    <option value="">Toutes les filières</option>
+                    {% for f in filieres %}
+                        <option value="{{ f.id }}" {% if f.id|stringformat:"s" == filiere_id %}selected{% endif %}>
+                            {{ f.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <noscript><button type="submit" class="btn btn-primary">Filtrer</button></noscript>
+            </form>
+        </div>
+ 
+
+<div class="container-fluid px-4">
+    
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Matiere
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Matiere</th>
+                        <th>Coefficient</th>
+                        <th>Professeur</th>
+                        <th>Unite d'enseignement</th>
+                        <th>Creneau horaire</th>
+                        <th>Bareme</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                        <th>Action</th>
+                        
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for matiere in matieres %}
+                    <tr id="matiere-{{matiere.id}}">
+                            <td> {{ matiere.id }} </td>
+                            <td> {{ matiere.nom }} </td>
+                            <td> {{ matiere.coefficient }} </td>
+                            <td>{{ matiere.professeur.user.get_full_name }}</td>
+                            <td> {{ matiere.unite_enseignement }} </td>
+                            <td> {{ matiere.creneau_horaire }} </td>
+                            <td>{{ matiere.bareme }}</td>
+                            <td>
+                                {% if matiere.active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'desactiver_matiere' matiere.id %}" class="btn btn-sm btn-danger" title="Désactiver"><i class="fa-solid fa-trash-can"></i></a>
+                            </td>
+                            
+                            
+
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune matiere enregistrée ...</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock content %}
+{% block js %}
+
+{% endblock js %}

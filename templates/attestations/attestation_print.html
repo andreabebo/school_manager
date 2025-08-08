@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Attestation - {{ attestation.get_type_attestation_display }}</title>
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+            body {
+                font-family: 'Times New Roman', serif;
+                font-size: 14px;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .student-info {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .signature-area {
+            margin-top: 100px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature {
+            width: 45%;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 50px;
+            padding-top: 5px;
+        }
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ATTESTATION DE {{ attestation.get_type_attestation_display|upper }}</h1>
+        <p>N° {{ attestation.id }} - {{ attestation.date_emission|date:"d/m/Y" }}</p>
+    </div>
+    
+    <div class="content">
+        <p>Le soussigné(e), {% if attestation.filiere.etablissement %}{{ attestation.filiere.etablissement.nom }}{% else %}l'établissement{% endif %}, atteste que :</p>
+        
+        <div class="student-info">
+            <h3>{{ attestation.student.user.get_full_name|upper }}</h3>
+            <p>
+                Né(e) le : {{ attestation.student.age|date:"d/m/Y" }}<br>
+                {% if attestation.student.matricule %}Matricule : {{ attestation.student.matricule }}<br>{% endif %}
+                Filière : {{ attestation.filiere.nom }}
+            </p>
+        </div>
+        
+        <p>
+            {% if attestation.type_attestation == 'scolarite' %}
+            est régulièrement inscrit(e) au sein de notre établissement pour l'année académique en cours.
+            {% elif attestation.type_attestation == 'reussite' %}
+            a réussi avec succès son parcours académique dans la filière {{ attestation.filiere.nom }}.
+            {% elif attestation.type_attestation == 'stage' %}
+            est autorisé(e) à effectuer un stage professionnel dans le cadre de sa formation.
+            {% elif attestation.type_attestation == 'fin_etudes' %}
+            a terminé avec succès son cursus académique dans notre établissement.
+            {% endif %}
+        </p>
+        
+        {% if attestation.texte_personnalise %}
+        <p>{{ attestation.texte_personnalise }}</p>
+        {% endif %}
+        
+        <p>
+            La présente attestation est délivrée à l'intéressé(e) pour servir et valoir ce que de droit.
+        </p>
+        
+        <p>
+            Fait à {% if attestation.filiere.etablissement %}{{ attestation.filiere.etablissement.ville }}{% else %}notre établissement{% endif %}, le {{ attestation.date_emission|date:"d F Y" }}.
+        </p>
+    </div>
+    
+    <div class="signature-area">
+        <div class="signature">
+            <p>Le Responsable de la formation</p>
+            <div class="signature-line"></div>
+        </div>
+        
+        <div class="signature">
+            <p>Le Directeur de l'établissement</p>
+            <div class="signature-line"></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        {% if attestation.valide_jusqua %}
+        <p>Valide jusqu'au : {{ attestation.valide_jusqua|date:"d/m/Y" }}</p>
+        {% endif %}
+        <p>Document généré le {% now "d/m/Y à H:i" %}</p>
+    </div>
+    
+    <button class="print-button no-print" onclick="window.print()">Imprimer</button>
+    <button onclick="window.close()" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Fermer
+    </button>
+    <script>
+        // Optionnel: lancer automatiquement l'impression
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</body>
+</html>

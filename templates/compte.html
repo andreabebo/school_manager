@@ -1,171 +1,317 @@
 {% extends "base.html" %}
-{% block title %}compte{% endblock title %}
-{% block css %}
-    <style>
-        body{
-            background: skyblue;
-        }
-        form.form{
-            
-            width: 100%;
-            height: 25%;
-            margin-left: 20px;
-            margin-top: 0px;
-        }
-        .container{
-            
-            margin-left: 100px;
-            margin-top: 5px;
-            width: 50%;
-        }
-        .sit {
-            width: 600px;
-            display: block;
-            border-radius: 20px;
-            border: none;
-        }
-        .ring{
-            width: 200px;
-            border: 4PX solid black;
-            
-            
-        }
-        label{
-            font-weight: bold;
-        }
-        .nina{
-            width: 100px;
-            margin-left: 450px;
-            background-color: rgb(0, 60, 255);
-            color: white;
-            border-radius: 10px;
-            display: flex;
-        }
+{% block title %}Mon Profil{% endblock title %}
 
-        .tin{
-            text-decoration: none;
-            color: white;
-            
-        }
-        .tina{
-            text-decoration: none;
-            color: blue;
-            
-        }
-        .nin{
-            font-weight: bold;
-            margin-right: 200px;
+{% block css %}
+<style>
+    /* Style universel pour tous les formulaires */
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .id-card-container {
+        max-width: 800px;
+        width: 100%;
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    .id-card {
+        border-radius: 18px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        min-height: 400px;
+        transition: transform 0.3s ease;
+    }
+    
+    .id-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .id-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        flex: 0 0 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .id-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        transform: rotate(30deg);
+    }
+    
+    .id-header h1 {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        position: relative;
+        margin: 0 0 20px 0;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-transform: uppercase;
+    }
+    
+    .id-photo-container {
+        position: relative;
+        z-index: 2;
+        margin: 0 auto 25px auto;
+    }
+    
+    .id-photo {
+        width: 180px;
+        height: 180px;
+        border: 5px solid white;
+        object-fit: cover;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .id-photo:hover {
+        transform: scale(1.03);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .id-details {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .id-details::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    }
+    
+    .info-row {
+        display: flex;
+        margin-bottom: 25px;
+        padding-left: 20px;
+        border-bottom: 1px solid #e0e7ff;
+        padding-bottom: 15px;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .info-label {
+        flex: 0 0 180px;
+        font-weight: 600;
+        color: #1e3c72;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .info-label i {
+        margin-right: 10px;
+        font-size: 1.3rem;
+        color: #4a7bff;
+    }
+    
+    .info-value {
+        flex: 1;
+        font-size: 1.05rem;
+        color: #2a3f5f;
+        display: flex;
+        align-items: center;
+    }
+    
+    .password-mask {
+        letter-spacing: 3px;
+        font-size: 1.3rem;
+    }
+    
+    .edit-btn {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        width: auto;
+    }
+    
+    .edit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+        color: white;
+    }
+    
+    .edit-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 20px;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(30deg);
+        transition: all 0.6s;
+    }
+    
+    .edit-btn:hover::after {
+        left: 120%;
+    }
+    
+    .default-image-note {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-style: italic;
+        position: relative;
+        z-index: 2;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .id-card {
+            flex-direction: column;
+            min-height: auto;
         }
         
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-    </style> 
+        .id-header {
+            padding: 20px;
+        }
+        
+        .id-details {
+            padding: 25px;
+        }
+        
+        .id-details::before {
+            top: 0;
+            left: 0;
+            right: 0;
+            width: auto;
+            height: 3px;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+        }
+        
+        .info-row {
+            flex-direction: column;
+            padding-left: 0;
+        }
+        
+        .info-label {
+            flex: 0 0 auto;
+            margin-bottom: 8px;
+        }
+        
+        .id-photo {
+            width: 140px;
+            height: 140px;
+        }
+        
+        .edit-btn {
+            width: 100%;
+            margin-top: 30px;
+        }
+    }
+</style>
 {% endblock css %}
-{% block content %}
-    <div class="container">
-        <form class="form" method="post">
-            {% csrf_token %}
-            {% if user.profile_image %}
-                <img class="ring" src="{{user.profile_image.url}}"><br>
-            {% else %}
-                <img class="ring" src="/static/images/formateur.PNG"><br>
-            {% endif %}
-            <label for="">Noms:</label>
-            <input class="sit" type="text" readonly name="last_name" value='{{user.last_name}}'><br>
-            <label for="">Prenoms:</label>
-            <input class="sit" type="text" readonly name="first_name" value='{{user.first_name}}'><br>
-            <label for="">Adresse email:</label>
-            <input class="sit" type="email" readonly name="email" value='{{user.email}}'><br>
-            <label for="">Mot de passe:</label>
-            <input class="sit" type="password" readonly name="password"><br>
-            <button class="nina" type="submit"><a class="tin" href="/edit_compte/{{user.id}}" >Modifier</a></button>
-           
-        </form>
-    </div>
-{% endblock content %}
 
-<div class="container profile profile-view" id="profile">
-        <div class="row">
-            <div class="col col-md-12 alert-col relative">
-                <div class="alert alert-info alert-dismissible absolue center" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span>Profile save with success</span></div>
+{% block content %}
+<div class="id-card-container">
+    <div class="id-card">
+        <div class="id-header">
+            
+            <div class="id-photo-container">
+                {% if user.profile_image %}
+                    <img class="id-photo" src="{{ user.profile_image.url }}" alt="Photo de profil">
+                {% else %}
+                    <img class="id-photo" src="/static/images/formateur.PNG" alt="Photo de profil par défaut">
+                    <p class="default-image-note">Image par défaut</p>
+                {% endif %}
             </div>
+            <h1> PROFIL</h1>
         </div>
-        <form>
-            <div class="row profile-row">
-                <div class="col col-md-4 relative">
-                    <div class="avatar">
-                        <div class="avatar-bg center"></div>
-                    </div><input class="form-control form-control" type="file" name="avatar-file">
+        
+        <div class="id-details">
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-person"></i> Nom
                 </div>
-                <div class="col col-md-8">
-                    <h1>Profile </h1>
-                    <hr>
-                    <div class="row">
-                        <div class="col col-sm-12 col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Nom </label>
-                                <input class="form-control" type="text" name="last_name">
-                            </div>
-                        </div>
-                        <div class="col col-sm-12 col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Prenom</label>
-                                <input class="form-control" type="text" name="first_name">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Email </label>
-                        <input class="form-control" type="email" autocomplete="off" required="" name="email">
-                    </div>
-                    <div class="row">
-                        <div class="col col-sm-12 col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Password </label>
-                                <input class="form-control" type="password" name="password" autocomplete="off" required="">
-                            </div>
-                        </div>
-                        <div class="col col-sm-12 col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Confirm Password</label>
-                                <input class="form-control" type="password" name="confirmpass" autocomplete="off" required="">
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col col-md-12 content-right">
-                            <button class="btn btn-primary form-btn" type="submit">SAVE </button>
-                            <button class="btn btn-danger form-btn" type="reset">CANCEL </button>
-                        </div>
-                    </div>
+                <div class="info-value">
+                    {{ user.last_name }}
                 </div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-person"></i> Prénom
                 </div>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/Profile-Edit-Form-profile.js"></script>
+                <div class="info-value">
+                    {{ user.first_name }}
+                </div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-envelope"></i> Email
+                </div>
+                <div class="info-value">
+                    {{ user.email }}
+                </div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-lock"></i> Mot de passe
+                </div>
+                <div class="info-value password-mask">
+                    ••••••••••••
+                </div>
+            </div>
+            
+            <a href="/edit_compte/{{ user.id }}" class="edit-btn">
+                <i class="bi bi-pencil-square me-2"></i> Modifier mon profil
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

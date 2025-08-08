@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}{% if is_creation %}Ajouter{% else %}Modifier{% endif %} Note{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header {% if is_creation %}bg-success{% else %}bg-warning{% endif %} text-white">
+                    <h2 class="mb-0">
+                        {% if is_creation %}
+                            <i class="bi bi-plus-circle me-2"></i> Ajouter une note
+                        {% else %}
+                            <i class="bi bi-pencil me-2"></i> Modifier une note
+                        {% endif %}
+                    </h2>
+                </div>
+                
+                <div class="card-body bg-white">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% if is_creation %}
+                            Ajout d'une note pour <strong>{{ student.user.get_full_name }}</strong>
+                        {% else %}
+                            Modification de la note de <strong>{{ object.student.user.get_full_name }}</strong> en 
+                            <strong>{{ object.matiere.nom }}</strong>
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <!-- Champ matière (seulement pour la création) -->
+                        {% if is_creation %}
+                        <div class="mb-4">
+                            <label for="id_matiere" class="form-label fw-bold">Matière</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-book text-primary"></i></span>
+                                <select name="matiere" id="id_matiere" class="form-select" required>
+                                    {% for value, text in form.matiere.field.choices %}
+                                        <option value="{{ value }}" {% if form.matiere.value == value %}selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% if form.matiere.errors %}
+                                <div class="text-danger small mt-1">{{ form.matiere.errors }}</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="id_note_cc" class="form-label fw-bold">Note CC</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-pencil text-primary"></i></span>
+                                    <input type="number" name="note_cc" value="{{ form.note_cc.value|default:'' }}" 
+                                           class="form-control" id="id_note_cc" 
+                                           min="0" max="20" step="0.01" placeholder="0.00 - 20.00">
+                                </div>
+                                {% if form.note_cc.errors %}
+                                    <div class="text-danger small mt-1">{{ form.note_cc.errors }}</div>
+                                {% endif %}
+                                <div class="form-text text-muted mt-1">Contrôle Continu (30%)</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_note_sn" class="form-label fw-bold">Note SN</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-pencil text-primary"></i></span>
+                                    <input type="number" name="note_sn" value="{{ form.note_sn.value|default:'' }}" 
+                                           class="form-control" id="id_note_sn" 
+                                           min="0" max="20" step="0.01" placeholder="0.00 - 20.00">
+                                </div>
+                                {% if form.note_sn.errors %}
+                                    <div class="text-danger small mt-1">{{ form.note_sn.errors }}</div>
+                                {% endif %}
+                                <div class="form-text text-muted mt-1">Session Normale (70%)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="border p-3 rounded mb-4 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Calcul de la moyenne</h5>
+                                <span class="badge bg-primary fs-6">
+                                    Moyenne: 
+                                    <span id="moyenne-result" class="fw-bold">
+                                        {% if not is_creation and object.moyenne %}
+                                            {{ object.moyenne|floatformat:2 }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="mt-2 text-muted">
+                                <small>Moyenne = (CC × 0.3) + (SN × 0.7)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            {% if is_creation %}
+                            <a href="{% url 'student_notes' student.id %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i> Annuler
+                            </a>
+                            {% else %}
+                            <a href="{% url 'student_notes' object.student.id %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i> Annuler
+                            </a>
+                            {% endif %}
+                            
+                            <button type="submit" class="btn {% if is_creation %}btn-success{% else %}btn-warning{% endif %}">
+                                {% if is_creation %}
+                                    <i class="bi bi-plus-circle me-2"></i> Ajouter
+                                {% else %}
+                                    <i class="bi bi-check-circle me-2"></i> Mettre à jour
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-attachment: fixed;
+        padding: 2rem 0;
+    }
+    
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1.8rem;
+    }
+    
+    .alert-info {
+        background-color: #e8f4fd;
+        border-color: #b8e2fc;
+        color: #0c5460;
+    }
+    
+    .input-group {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: none;
+        border-right: 1px solid #e9ecef;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #e9ecef;
+        height: 46px;
+        padding: 0.5rem 1rem;
+        background-color: white;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .form-label {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-success {
+        background: linear-gradient(to right, #28a745, #218838);
+        border: none;
+    }
+    
+    .btn-warning {
+        background: linear-gradient(to right, #ffc107, #e0a800);
+        border: none;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(to right, #6c757d, #5a6268);
+        border: none;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge.bg-primary {
+        background: linear-gradient(to right, #0d6efd, #0b5ed7);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+    
+    #moyenne-result {
+        font-size: 1.1em;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const noteCC = document.getElementById('id_note_cc');
+        const noteSN = document.getElementById('id_note_sn');
+        const moyenneResult = document.getElementById('moyenne-result');
+        
+        function calculateMoyenne() {
+            const cc = parseFloat(noteCC.value) || 0;
+            const sn = parseFloat(noteSN.value) || 0;
+            
+            // Limiter les valeurs entre 0 et 20
+            const validCC = Math.min(Math.max(cc, 0), 20);
+            const validSN = Math.min(Math.max(sn, 0), 20);
+            
+            if (cc !== validCC) noteCC.value = validCC;
+            if (sn !== validSN) noteSN.value = validSN;
+            
+            const moyenne = (validCC * 0.3) + (validSN * 0.7);
+            moyenneResult.textContent = moyenne.toFixed(2);
+            
+            // Mise à jour de la couleur en fonction de la moyenne
+            if (moyenne >= 10) {
+                moyenneResult.className = 'fw-bold text-success';
+            } else {
+                moyenneResult.className = 'fw-bold text-danger';
+            }
+        }
+        
+        if (noteCC) noteCC.addEventListener('input', calculateMoyenne);
+        if (noteSN) noteSN.addEventListener('input', calculateMoyenne);
+        
+        // Initial calculation
+        calculateMoyenne();
+        
+        // Amélioration UX : mise en évidence des champs au focus
+        const inputs = document.querySelectorAll('.form-control, .form-select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#86b7fe';
+                this.style.boxShadow = '0 0 0 0.25rem rgba(13, 110, 253, 0.15)';
+                this.parentElement.style.boxShadow = '0 0 0 0.2rem rgba(13, 110, 253, 0.1)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#e9ecef';
+                this.style.boxShadow = 'none';
+                this.parentElement.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.05)';
+            });
+        });
+    });
+</script>
+{% endblock %}

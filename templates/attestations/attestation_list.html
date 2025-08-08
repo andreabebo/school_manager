@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Gestion des Attestations</h2>
+    
+    <a href="{% url 'attestation_add' %}" class="btn btn-success mb-3">
+        <i class="bi bi-plus-circle"></i> Créer une attestation
+    </a>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Filière</th>
+                    <th>Type</th>
+                    <th>Date d'émission</th>
+                    <th>Valide jusqu'au</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attestation in attestations %}
+                <tr>
+                    <td>{{ attestation.student.user.get_full_name }}</td>
+                    <td>{{ attestation.filiere.nom }}</td>
+                    <td>{{ attestation.get_type_attestation_display }}</td>
+                    <td>{{ attestation.date_emission|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if attestation.valide_jusqua %}
+                        {{ attestation.valide_jusqua|date:"d/m/Y" }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'attestation_detail' attestation.pk %}" class="btn btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'attestation_edit' attestation.pk %}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'attestation_print' attestation.pk %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-download"></i>
+                        </a>
+                        <a href="{% url 'attestation_delete' attestation.pk %}" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucune attestation enregistrée</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

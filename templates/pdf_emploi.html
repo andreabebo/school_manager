@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Emploi du Temps - {{ emploi.filiere.nom }}{% endblock title %}
+
+{% block css %}
+<style>
+    /* Styles pour l'écran */
+    @media screen {
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .print-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        
+        .actions {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .btn-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    }
+    
+    /* Styles pour l'impression */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 15mm;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .no-print {
+            display: none !important;
+        }
+        
+        .print-container {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+        }
+    }
+    
+    /* Styles communs */
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #2c3e50;
+    }
+    
+    .header h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .info-card {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .info-card h3 {
+        font-size: 14px;
+        margin: 0 0 8px 0;
+        color: #6c757d;
+        font-weight: 600;
+    }
+    
+    .info-card p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    
+    th {
+        background-color: #2c3e50;
+        color: white;
+        font-weight: 600;
+        text-align: center;
+        padding: 12px 10px;
+        border: 1px solid #1a2530;
+    }
+    
+    td {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        text-align: center;
+    }
+    
+    tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .footer {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #dee2e6;
+        font-size: 10pt;
+        color: #6c757d;
+        text-align: right;
+    }
+    
+    .signature {
+        margin-top: 40px;
+        padding-top: 10px;
+        border-top: 1px solid #000;
+        width: 300px;
+        text-align: center;
+        margin-left: auto;
+    }
+    
+    .empty-row td {
+        padding: 20px;
+        font-style: italic;
+        color: #6c757d;
+        text-align: center;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="print-container">
+    <div class="actions no-print">
+        <button onclick="window.print()" class="btn btn-primary btn-print">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+        <a href="{% url 'afficher_emploi_de_temps' emploi.id %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    <div class="header">
+        <h1>EMPLOI DU TEMPS</h1>
+        <p>Période du {{ emploi.date_debut|date:"d/m/Y" }} au {{ emploi.date_fin|date:"d/m/Y" }}</p>
+    </div>
+    
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Filière</h3>
+            <p>{{ emploi.filiere.nom }}</p>
+        </div>
+        
+        <div class="info-card">
+            <h3>Session</h3>
+            <p>{{ emploi.session.nom_session }}</p>
+        </div>
+        
+        
+        <div class="info-card">
+            <h3>Date de génération</h3>
+            <p>{% now "d/m/Y à H:i" %}</p>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Jour</th>
+                    <th>Heure début</th>
+                    <th>Heure fin</th>
+                    <th>Matière</th>
+                    <th>Professeur</th>
+                    <th>Salle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activite in activites %}
+                <tr>
+                    <td>{{ activite.jour }}</td>
+                    <td>{{ activite.heure_debut|time:"H:i" }}</td>
+                    <td>{{ activite.heure_fin|time:"H:i" }}</td>
+                    <td>{{ activite.matiere.nom }}</td>
+                    <td>{{ activite.professeur.user.get_full_name }}</td>
+                    <td>{{ activite.salle.nom|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row">
+                    <td colspan="6">Aucune activité programmée pour cette période</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="footer">
+        <p>Généré par {{ request.user.get_full_name }} le {% now "d/m/Y à H:i" %}</p>
+        <div class="signature">
+            <p>Signature et cachet de l'établissement</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+    // Optionnel: impression automatique au chargement
+    window.addEventListener('DOMContentLoaded', (event) => {
+        // Pour imprimer automatiquement, décommentez la ligne suivante:
+        // window.print();
+    });
+</script>
+{% endblock js %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Détails de l'Attestation</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Informations générales
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Matricule:</dt>
+                <dd class="col-sm-9">{{ attestation.student.matricule }}</dd>
+                <dt class="col-sm-3">Étudiant:</dt>
+                <dd class="col-sm-9">{{ attestation.student.user.get_full_name }}</dd>
+                
+                <dt class="col-sm-3">Filière:</dt>
+                <dd class="col-sm-9">{{ attestation.filiere.nom }}</dd>
+                
+                <dt class="col-sm-3">Type d'attestation:</dt>
+                <dd class="col-sm-9">{{ attestation.get_type_attestation_display }}</dd>
+                
+                <dt class="col-sm-3">Date d'émission:</dt>
+                <dd class="col-sm-9">{{ attestation.date_emission|date:"d/m/Y" }}</dd>
+                
+                <dt class="col-sm-3">Valide jusqu'au:</dt>
+                <dd class="col-sm-9">
+                    {% if attestation.valide_jusqua %}
+                    {{ attestation.valide_jusqua|date:"d/m/Y" }}
+                    {% else %}
+                    Illimité
+                    {% endif %}
+                </dd>
+                
+                <dt class="col-sm-3">Délivré par:</dt>
+                <dd class="col-sm-9">{{ attestation.delivre_par.get_full_name }}</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Contenu personnalisé
+        </div>
+        <div class="card-body">
+            {{ attestation.texte_personnalise|linebreaks }}
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'attestation_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+        
+        <div>
+            
+            
+            <a href="{% url 'attestation_print' attestation.pk %}" class="btn btn-success" target="_blank">
+                <i class="bi bi-printer"></i> Imprimer
+            </a>
+           
+            <a href="{% url 'attestation_edit' attestation.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

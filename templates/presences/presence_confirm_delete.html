@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Confirmer la suppression</h2>
+    
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            Supprimer la liste de présence
+        </div>
+        <div class="card-body">
+            <p>Êtes-vous sûr de vouloir supprimer cette liste de présence ?</p>
+            <p><strong>Date:</strong> {{ object.date_cours|date:"d/m/Y" }}</p>
+            <p><strong>Matière:</strong> {{ object.matiere.nom }}</p>
+            <p><strong>Filière:</strong> {{ object.filiere.nom }}</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Confirmer la suppression
+                </button>
+                <!-- Utilisez object.pk au lieu de liste.pk -->
+                <a href="{% url 'presence_detail' object.pk %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

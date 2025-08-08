@@ -1,28 +1,68 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Sujets de discussion</h2>
-  <ul class="list-group">
-    {% for sujet in sujets %}
-      <li class="list-group-item d-flex align-items-center justify-content-between">
-        <div>
-          <i class="fa-solid fa-message me-2 text-primary"></i>
-          <a href="{{ sujet.get_absolute_url }}" class="fw-semibold">{{ sujet.titre }}</a>
-          <span class="text-muted small">par {{ sujet.auteur.get_full_name|default:sujet.auteur }} ({{ sujet.date_creation|date:"d/m/Y H:i" }})</span>
-          {% if sujet.fichier %}
-            <br>
-            <a href="{{ sujet.fichier.url }}" class="link-primary small" download>
-              <i class="fa-solid fa-paperclip me-1"></i>Télécharger le fichier
-            </a>
+<div class="container py-5">
+  <!-- Carte résumé (summary card) -->
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow border-0 text-center mb-4">
+        <div class="card-body py-5">
+          {# Affichage des messages d'autres membres #}
+          {% if nb_sujets_autres > 0 or nb_commentaires_autres > 0 %}
+            <div class="alert alert-info d-flex align-items-center justify-content-center mb-4" role="alert">
+              <i class="fa-solid fa-bell me-2"></i>
+              <span>
+                Il y a {{ nb_sujets_autres }} sujet{{ nb_sujets_autres|pluralize }}, {{ nb_commentaires_autres }} commentaire{{ nb_commentaires_autres|pluralize }} posté(s) par d'autres membres.
+              </span>
+            </div>
+          {% else %}
+            <h4 class="mb-0 text-muted"><i class="fa-solid fa-inbox me-2"></i>Aucun message d'autres membres pour l’instant</h4>
           {% endif %}
+          <hr>
+           <!-- Liste des sujets -->
+  <div class="mt-4">
+    <h2>Discussion</h2>
+    <ul class="list-group list-group-flush">
+      {% for sujet in sujets %}
+        <li class="list-group-item py-3 px-2 border-0 border-bottom d-flex align-items-center conversation-item position-relative" style="cursor:pointer; transition:background 0.2s;" onclick="window.location='{{ sujet.get_absolute_url }}'">
+          <!-- Avatar (initiale ou icône) -->
+          <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;">
+            <span class="fs-4 text-primary">{{ sujet.auteur.get_full_name|default:sujet.auteur|slice:':1'|upper }}</span>
+          </div>
+          <!-- Corps conversation -->
+          <div class="flex-grow-1 overflow-hidden">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="fw-semibold {% if sujet.nb_nouveaux_commentaires and sujet.nb_nouveaux_commentaires > 0 %}text-dark{% else %}text-secondary{% endif %} {% if sujet.nb_nouveaux_commentaires and sujet.nb_nouveaux_commentaires > 0 %}fw-bold{% endif %}">
+                {{ sujet.titre }}
+              </span>
+              <span class="small text-muted ms-2">{% if sujet.last_comment %}{{ sujet.last_comment.date_pub|date:'d/m H:i' }}{% else %}{{ sujet.date_creation|date:'d/m H:i' }}{% endif %}</span>
+            </div>
+            <div class="d-flex align-items-center mt-1">
+              <span class="small text-truncate" style="max-width: 220px;">
+                {% if sujet.last_comment %}
+                  <span class="fw-bold text-success">{{ sujet.last_comment.auteur.get_full_name|default:sujet.last_comment.auteur }}</span> :
+                  {{ sujet.last_comment.texte|truncatechars:60 }}
+                {% else %}
+                  <span class="text-muted">Aucun message</span>
+                {% endif %}
+              </span>
+              {% if sujet.nb_nouveaux_commentaires and sujet.nb_nouveaux_commentaires > 0 %}
+                <span class="badge bg-success ms-2"><i class="fa-solid fa-circle-dot me-1"></i>{{ sujet.nb_nouveaux_commentaires }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <!-- Actions auteur (affichées au hover ou sur mobile) -->
+          {# Les options modifier/supprimer sont désormais dans sujet_detail.html #}
+        </li>
+      {% empty %}
+        <li class="list-group-item">Aucun sujet pour cette filière.</li>
         </div>
-        <div>
-          <span class="badge bg-secondary">{{ sujet.commentaires.count }} commentaire{{ sujet.commentaires.count|pluralize }}</span>
-        </div>
-      </li>
-    {% empty %}
-      <li class="list-group-item">Aucun sujet pour cette filière.</li>
-    {% endfor %}
-  </ul>
+      </div>
+    </div>
+  </div>
+
+ 
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 {% endblock %}

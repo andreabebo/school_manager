@@ -1,0 +1,45 @@
+{% extends base.html %}
+{% block css %}
+
+
+ <style>
+    .card {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .form-control {
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        width: 100%;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+
+<div class="col-md-3">
+            <select name="filiere" class="form-select">
+                <option value="">-- Filtrer par filière --</option>
+                {% for filiere in filieres %}
+                    <option value="{{ filiere.id }}" {% if filiere_id|default:'' == filiere.id|stringformat:'s' %}selected{% endif %}>{{ filiere.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+
+
+
+
+
+
+{% endblock content%}
+{% block js %}
+
+{% endblock js %}
+
+
+
+   

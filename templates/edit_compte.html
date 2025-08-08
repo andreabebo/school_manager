@@ -1,94 +1,330 @@
 {% extends "base.html" %}
-{% block title %}compte{% endblock title %}
+{% block title %}Modifier mon Profil{% endblock title %}
+
 {% block css %}
-    <style>
-        body{
-            background: skyblue;
-        }
-        form{
-            
-            width: 100%;
-            height: 25%;
-            margin-left: 20px;
-            margin-top: 0px;
-        }
-        .container{
-            
-            margin-left: 100px;
-            margin-top: 5px;
-            width: 50%;
-        }
-        .sit {
-            width: 600px;
-            display: block;
-            border-radius: 20px;
-            border: none;
-        }
-        .ring{
-            width: 200px;
-            border: 4PX solid black;
-            
-        }
-        label{
-            font-weight: bold;
-        }
-        .nina{
-            width: 100px;
-            margin-left: 450px;
-            background-color: rgb(0, 60, 255);
-            color: white;
-            border-radius: 10px;
+<style>
+    /* Style universel pour tous les formulaires */
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .edit-card-container {
+        max-width: 900px;
+        width: 100%;
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    .edit-card {
+        border-radius: 18px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        min-height: 450px;
+        transition: transform 0.3s ease;
+    }
+    
+    .edit-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .edit-photo-section {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        flex: 0 0 35%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .edit-photo-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        transform: rotate(30deg);
+    }
+    
+    .edit-photo-section h1 {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        position: relative;
+        margin: 0 0 25px 0;
+        font-size: 1.8rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-transform: uppercase;
+    }
+    
+    .current-photo-container {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 25px;
+    }
+    
+    .current-photo {
+        width: 200px;
+        height: 200px;
+        border: 5px solid white;
+        object-fit: cover;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+    }
+    
+    .photo-upload {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .photo-upload input {
+        width: 100%;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .photo-upload input:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .photo-upload input::file-selector-button {
+        background: white;
+        color: #1e3c72;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .photo-upload input::file-selector-button:hover {
+        background: #f0f5ff;
+    }
+    
+    .edit-form-section {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .edit-form-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        padding-left: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #1e3c72;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-label i {
+        margin-right: 10px;
+        font-size: 1.3rem;
+        color: #4a7bff;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid #d1d9e6;
+        border-radius: 10px;
+        background: #f5f9ff;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-input:focus {
+        border-color: #4a7bff;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 123, 255, 0.2);
+        outline: none;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .submit-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 20px;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(30deg);
+        transition: all 0.6s;
+    }
+    
+    .submit-btn:hover::after {
+        left: 120%;
+    }
+    
+    .password-note {
+        font-size: 0.85rem;
+        color: #7f8c9a;
+        margin-top: 5px;
+        font-style: italic;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .edit-card {
+            flex-direction: column;
+            min-height: auto;
         }
         
-            body{
-                margin: 0;
-                justify-content: center;
-                font-family: Arial, sans-serif;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-            body.light{
-                background-color: #f8f9fa;
-                color: #212529;
-            }
-            body.dark{
-                background-color: #121212;
-                color: #e4e6eb;
-            }
-            select{
-                padding: 0.5rem;
-                font-size: 1rem;
-            } 
-            .card{
-                
-                border-radius: 8px;
-                transition:background-color 0.5s ease;
-                
-            }   
-            body.dark .card{
-                background-color: rgba(255,255,255,0.05);
-            }
-            
-    </style> 
+        .edit-photo-section {
+            padding: 20px;
+        }
+        
+        .edit-form-section {
+            padding: 25px;
+        }
+        
+        .edit-form-section::before {
+            top: 0;
+            left: 0;
+            right: 0;
+            width: auto;
+            height: 3px;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+        }
+        
+        .current-photo {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            max-width: none;
+        }
+    }
+</style>
 {% endblock css %}
+
 {% block content %}
-    <div class="container">
-        <form class="form" method="post" enctype="multipart/form-data" action="{% url 'edit_compte' user.id %}">
-            {% csrf_token %}
-            {% if user.profile_image %}
-                <img class="ring" src="{{user.profile_image.url}}"><br>
-            {% else %}
-                <img class="ring" src="/static/images/formateur.PNG"><br>
-            {% endif %}
-            <input class="sit" type="file" name="image"><br>
-            <label for="">Noms:</label>
-            <input class="sit" type="text"  name="last_name" value='{{user.last_name}}'><br>
-            <label for="">Prenoms:</label>
-            <input class="sit" type="text"  name="first_name" value='{{user.first_name}}'><br>
-            <label for="">Adresse email:</label>
-            <input class="sit" type="email" name="email" value='{{user.email}}'><br>
-            <label for="">Mot de passe:</label>
-            <input class="sit" type="password"  name="password"><br>
-            <button class="nina" type="submit">Modifier</button>
-        </form>
+<div class="edit-card-container">
+    <div class="edit-card">
+        <div class="edit-photo-section">
+            <h1>MODIFIER MON PROFIL</h1>
+            <div class="current-photo-container">
+                {% if user.profile_image %}
+                    <img class="current-photo" src="{{ user.profile_image.url }}" alt="Photo actuelle">
+                {% else %}
+                    <img class="current-photo" src="/static/images/formateur.PNG" alt="Photo par défaut">
+                {% endif %}
+            </div>
+            <div class="photo-upload">
+                <input type="file" name="image" accept="image/*">
+            </div>
+        </div>
+        
+        <div class="edit-form-section">
+            <form method="post" enctype="multipart/form-data" action="{% url 'edit_compte' user.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label" for="last_name">
+                        <i class="bi bi-person"></i> Nom
+                    </label>
+                    <input class="form-input" type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="first_name">
+                        <i class="bi bi-person"></i> Prénom
+                    </label>
+                    <input class="form-input" type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope"></i> Adresse email
+                    </label>
+                    <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock"></i> Mot de passe
+                    </label>
+                    <input class="form-input" type="password" id="password" name="password" placeholder="Entrez un nouveau mot de passe">
+                    <div class="password-note">Laissez vide pour conserver le mot de passe actuel</div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="bi bi-check-circle me-2"></i> Mettre à jour
+                </button>
+            </form>
+        </div>
     </div>
+</div>
 {% endblock content %}

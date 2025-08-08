@@ -224,3 +224,90 @@ def liste_notes(request, student_id):
         "notes": notes,
         "moyenne": moyenne
     })
+
+
+
+
+
+
+
+    <div class="tab-pane fade" id="account" role="tabpanel">
+        <div class="account-selector">
+            <h3 class="mb-4">Création de Compte</h3>
+            <select id="accountType" class="mb-4">
+                <option value="">Sélectionnez un type de compte</option>
+                
+                <option value="student">Étudiant</option>
+                <option value="teacher">Professeur</option>
+            </select>
+        </div>
+          <div class="tab-content">
+              <!-- Formulaire Professeur -->
+              <div class="form-container account-form" id="teacher-form">
+                <h3 class="form-title">Compte Professeur</h3>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fa-solid fa-circle-exclamation me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form id="loginForm" method="post" action="{% url 'connexion' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Adresse e-mail</label>
+                        <input type="text" class="form-control" id="email" placeholder="Entrez nom d'utilisateur" 
+                               name="username" required value="{{ username|default:'' }}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" placeholder="Mot de passe" 
+                                   name="password" required />
+                            <button class="btn btn-outline-light" type="button" id="togglePasswordBtn" onclick="togglePassword()">
+                                <i id="togglePasswordIcon" class="fa-solid fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Se connecter</button>
+                    
+                </form>
+              </div>
+              
+              <!-- Formulaire Etudiant -->
+              <div class="form-container account-form" id="student-form">
+                <h3 class="form-title">Compte Étudiant</h3>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fa-solid fa-circle-exclamation me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form id="loginForm" method="post" action="{% url 'connexion' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Adresse e-mail</label>
+                        <input type="text" class="form-control" id="email" placeholder="Entrez nom d'utilisateur" 
+                               name="username" required value="{{ username|default:'' }}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" placeholder="Mot de passe" 
+                                   name="password" required />
+                            <button class="btn btn-outline-light" type="button" id="togglePasswordBtn" onclick="togglePassword()">
+                                <i id="togglePasswordIcon" class="fa-solid fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Se connecter</button>
+                    
+                </form>
+              </div>
+          </div>
+      </div>
